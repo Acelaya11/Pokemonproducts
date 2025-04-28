@@ -75,16 +75,16 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
 
         {/* Thumbnails with Navigation */}
         {item.additionalImages && item.additionalImages.length > 1 && (
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-4">
             <Button
               onClick={prevImage}
-              className="p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="p-1.5 sm:p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
               aria-label="Previous image"
             >
-              <ChevronLeft />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             
-            <div className="flex justify-center gap-2 overflow-x-auto py-2 max-w-[calc(100%-100px)] scrollbar-hide">
+            <div className="flex justify-center gap-1 sm:gap-2 py-2 w-[calc(100%-60px)] sm:w-[calc(100%-80px)] overflow-x-auto scrollbar-hide">
               {item.additionalImages.map((image, index) => (
                 <Button
                   key={index}
@@ -92,7 +92,7 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                     setCurrentImageIndex(index);
                     setIsLoading(true);
                   }}
-                  className={`p-0 h-16 w-16 rounded-md overflow-hidden border-2 transition-all ${
+                  className={`p-0 h-12 w-12 sm:h-16 sm:w-16 rounded-md overflow-hidden border-2 transition-all ${
                     currentImageIndex === index ? 'border-black scale-105' : 'border-transparent hover:border-gray-300'
                   }`}
                 >
@@ -109,10 +109,10 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
 
             <Button
               onClick={nextImage}
-              className="p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="p-1.5 sm:p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
               aria-label="Next image"
             >
-              <ChevronRight />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
         )}
