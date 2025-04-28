@@ -28,18 +28,19 @@ transporter.verify(function(error) {
 
 interface SellRequest {
   email: string;
-  items: string;
+  description: string;
+  timestamp: string;
   status: 'pending' | 'reviewed' | 'completed';
   id: string;
 }
 
 export async function POST(request: Request) {
   try {
-    const { email, items } = await request.json();
+    const { email, description } = await request.json();
 
-    if (!email || !items) {
+    if (!email || !description) {
       return NextResponse.json(
-        { error: 'Email and items are required' },
+        { error: 'Email and description are required' },
         { status: 400 }
       );
     }
@@ -64,10 +65,10 @@ export async function POST(request: Request) {
     }
 
     // Read existing data or initialize empty array
-    let requests: SellRequest[] = [];
+    let sellRequests: SellRequest[] = [];
     try {
       const fileContent = await fs.readFile(filePath, 'utf-8');
-      requests = JSON.parse(fileContent);
+      sellRequests = JSON.parse(fileContent);
     } catch {
       // File doesn't exist or is empty, start with empty array
     }
@@ -75,16 +76,17 @@ export async function POST(request: Request) {
     // Create new sell request
     const newRequest: SellRequest = {
       email,
-      items,
+      description,
+      timestamp: new Date().toISOString(),
       status: 'pending',
-      id: `S-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      id: `SELL-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     };
 
     // Add new request to array
-    requests.push(newRequest);
+    sellRequests.push(newRequest);
 
     // Write updated data back to file
-    await fs.writeFile(filePath, JSON.stringify(requests, null, 2));
+    await fs.writeFile(filePath, JSON.stringify(sellRequests, null, 2));
 
     // Send email notification
     const mailOptions = {
@@ -92,18 +94,19 @@ export async function POST(request: Request) {
       to: process.env.PONCHOS_SELLER_EMAIL,
       subject: `New Sell Request - ${newRequest.id}`,
       html: `
-        <h2>New Sell Request Received</h2>
+        <h2>New Sell Request</h2>
         <p><strong>Request ID:</strong> ${newRequest.id}</p>
-        <p><strong>From:</strong> ${email}</p>
-        <p><strong>Items:</strong></p>
-        <p>${items}</p>
+        <p><strong>Customer Email:</strong> ${email}</p>
+        <p><strong>Description:</strong></p>
+        <p>${description}</p>
+        <p><strong>Timestamp:</strong> ${new Date(newRequest.timestamp).toLocaleString()}</p>
       `
     };
 
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json({
-      success: true,
+      message: 'Sell request submitted successfully',
       requestId: newRequest.id
     });
 

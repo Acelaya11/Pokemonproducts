@@ -29,6 +29,7 @@ transporter.verify(function(error) {
 interface QuestionRequest {
   email: string;
   question: string;
+  timestamp: string;
   status: 'pending' | 'reviewed' | 'completed';
   id: string;
 }
@@ -76,6 +77,7 @@ export async function POST(request: Request) {
     const newQuestion: QuestionRequest = {
       email,
       question,
+      timestamp: new Date().toISOString(),
       status: 'pending',
       id: `Q-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     };
@@ -97,6 +99,7 @@ export async function POST(request: Request) {
         <p><strong>From:</strong> ${email}</p>
         <p><strong>Question:</strong></p>
         <p>${question}</p>
+        <p><strong>Timestamp:</strong> ${new Date(newQuestion.timestamp).toLocaleString()}</p>
       `
     };
 
