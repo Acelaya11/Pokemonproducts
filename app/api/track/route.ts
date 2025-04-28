@@ -1,19 +1,9 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
 const TRACKING_FILE = path.join(process.cwd(), 'data', 'tracking.json');
-
-// Ensure the data directory exists
-if (!fs.existsSync(path.dirname(TRACKING_FILE))) {
-  fs.mkdirSync(path.dirname(TRACKING_FILE), { recursive: true });
-}
-
-// Initialize tracking file if it doesn't exist
-if (!fs.existsSync(TRACKING_FILE)) {
-  fs.writeFileSync(TRACKING_FILE, JSON.stringify([]));
-}
 
 // Function to generate a short user ID
 function generateShortUserId(): string {
@@ -45,14 +35,22 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString()
     };
 
-    // Read existing data
-    const existingData = JSON.parse(fs.readFileSync(TRACKING_FILE, 'utf-8'));
-    
-    // Add new record
-    existingData.push(record);
-    
-    // Write back to file
-    fs.writeFileSync(TRACKING_FILE, JSON.stringify(existingData, null, 2));
+    try {
+      // Try to read existing data
+      const fileContent = await fs.readFile(TRACKING_FILE, 'utf-8');
+      const existingData = JSON.parse(fileContent);
+      existingData.push(record);
+      await fs.writeFile(TRACKING_FILE, JSON.stringify(existingData, null, 2));
+    } catch (error) {
+      // If file doesn't exist or there's an error, create new file with single record
+      try {
+        await fs.mkdir(path.dirname(TRACKING_FILE), { recursive: true });
+        await fs.writeFile(TRACKING_FILE, JSON.stringify([record], null, 2));
+      } catch (writeError) {
+        console.error('Error writing tracking data:', writeError);
+        // Continue execution even if writing fails
+      }
+    }
 
     // Return a 1x1 transparent GIF
     return new NextResponse(
