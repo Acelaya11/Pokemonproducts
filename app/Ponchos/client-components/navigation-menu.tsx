@@ -25,10 +25,10 @@ export function NavigationMenu() {
             className="logo w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 shadow-lg shadow-black rounded-lg" 
           />
           {/* Navigation Links */}
-          <div className="flex flex-wrap gap-1 md:gap-2 lg:gap-4">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 lg:gap-4">
             <div 
               onClick={scrollToGrid} 
-              className="text-white hover:text-gray-900 px-1 md:px-2 lg:px-3 py-1 md:py-2 rounded-md text-xs md:text-sm font-medium cursor-pointer nav-link whitespace-nowrap"
+              className="text-white hover:text-gray-900 px-2 py-1 md:px-3 md:py-2 rounded-md text-sm md:text-base font-medium cursor-pointer nav-link whitespace-nowrap"
             >
               Shop
             </div>
@@ -36,7 +36,7 @@ export function NavigationMenu() {
             <QADialog />
             <Link 
               href="/about" 
-              className="text-white hover:text-gray-900 px-1 md:px-2 lg:px-3 py-1 md:py-2 rounded-md text-xs md:text-sm font-medium nav-link whitespace-nowrap"
+              className="text-white hover:text-gray-900 px-2 py-1 md:px-3 md:py-2 rounded-md text-sm md:text-base font-medium nav-link whitespace-nowrap"
             >
               About
             </Link>
