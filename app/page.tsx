@@ -1,11 +1,9 @@
 import Image from 'next/image';
 import gengarwallpaper from '../public/gengarwallpaper.png';
-import { TrackingPixel } from './Ponchos/client-components/tracking-pixel';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen relative">
-      <TrackingPixel eventName="page_view" />
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 w-full h-full">
         <Image

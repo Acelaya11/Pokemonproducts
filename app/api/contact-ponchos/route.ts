@@ -26,21 +26,11 @@ transporter.verify(function(error) {
 
 export async function POST(request: Request) {
   try {
-    // Log the incoming request
-    console.log('Received contact request');
+    const { email, message } = await request.json();
 
-    const body = await request.json();
-    const { message, email } = body;
-    const timestamp = new Date().toISOString();
-
-    // Log the received data
-    console.log('Request data:', body);
-
-    // Validate required fields
-    if (!message || !email) {
-      console.error('Missing required fields:', { message, email });
+    if (!email || !message) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Email and message are required' },
         { status: 400 }
       );
     }
@@ -54,80 +44,30 @@ export async function POST(request: Request) {
       );
     }
 
-    let emailContent;
-    let emailSubject;
-
-    // Handle cart contact (multiple items)
-    if (body.items && Array.isArray(body.items)) {
-      const itemsList = body.items.map((item: { id: number; id_name: string; price: number }) => `
-        <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-          <p><strong>ID:</strong> ${item.id}</p>
-          <p><strong>ID Name:</strong> ${item.id_name}</p>
-          <p><strong>Price:</strong> $${item.price.toFixed(2)}</p>
-        </div>
-      `).join('');
-
-      emailSubject = `New Cart Contact Request - ${body.items.length} Items`;
-      emailContent = `
-        <h2>New Cart Contact Request</h2>
-        <p><strong>Customer Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-        <h3>Items (${body.items.length}):</h3>
-        ${itemsList}
-        <p><strong>Total Amount:</strong> $${body.totalAmount.toFixed(2)}</p>
-        <p><strong>Timestamp:</strong> ${new Date(timestamp).toLocaleString()}</p>
-      `;
-    }
-    // Handle single item contact
-    else {
-      emailSubject = `New Contact Request for Item #${body.id}`;
-      emailContent = `
-        <h2>New Contact Request</h2>
-        <p><strong>Customer Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-        <div style="margin: 20px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-          <p><strong>ID:</strong> ${body.id}</p>
-          <p><strong>ID Name:</strong> ${body.id_name}</p>
-          <p><strong>Price:</strong> $${body.price.toFixed(2)}</p>
-        </div>
-        <p><strong>Timestamp:</strong> ${new Date(timestamp).toLocaleString()}</p>
-      `;
-    }
-
-    // Send email
+    // Send email notification
     const mailOptions = {
       from: process.env.PONCHOS_EMAIL_USER,
       to: process.env.PONCHOS_SELLER_EMAIL,
-      subject: emailSubject,
-      html: emailContent,
+      subject: 'New Contact Form Submission',
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>From:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
     };
 
-    console.log('Attempting to send email...');
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.response);
+    await transporter.sendMail(mailOptions);
 
-    return NextResponse.json(
-      { message: 'Contact request received successfully' },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: 'Contact form submitted successfully'
+    });
+
   } catch (error) {
-    console.error('Error processing contact request:', error);
-    
-    // Return more specific error messages
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { 
-          error: 'Failed to send message',
-          details: error.message
-        },
-        { status: 500 }
-      );
-    }
-    
+    console.error('Error processing contact form:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to process contact form' },
       { status: 500 }
     );
   }
