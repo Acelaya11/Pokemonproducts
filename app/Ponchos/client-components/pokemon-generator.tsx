@@ -26,6 +26,7 @@ export function PokemonGenerator() {
   const [animationState, setAnimationState] = useState<'idle' | 'shaking' | 'opening' | 'reveal'>('idle');
   const [headingText, setHeadingText] = useState('Choose Your Shopping Buddy');
   const [preSelectedPokemon, setPreSelectedPokemon] = useState<{ name: string; image: typeof charmander } | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   // Pre-select a Pokemon on component mount with equal odds
   useEffect(() => {
@@ -57,6 +58,21 @@ export function PokemonGenerator() {
         <div className="fixed inset-0 bg-stone-200 animate-flash z-50"></div>
       )}
 
+      {/* Hidden preloaded image */}
+      {preSelectedPokemon && (
+        <div className="hidden">
+          <Image
+            src={preSelectedPokemon.image}
+            alt={preSelectedPokemon.name}
+            width={128}
+            height={128}
+            priority
+            quality={100}
+            onLoad={() => setIsImageLoaded(true)}
+          />
+        </div>
+      )}
+
       <div className="flex flex-col items-center">
         <h2 className="text-2xl font-bold text-white mb-8">{headingText}</h2>
         
@@ -74,7 +90,7 @@ export function PokemonGenerator() {
           </div>
 
           {/* Pokemon Image */}
-          {selectedPokemon && animationState === 'reveal' && (
+          {selectedPokemon && animationState === 'reveal' && isImageLoaded && (
             <div className="absolute inset-0 animate-fade-in">
               <Image
                 src={selectedPokemon.image}
