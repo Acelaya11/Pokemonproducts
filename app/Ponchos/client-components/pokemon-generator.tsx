@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import charmander from '../../../public/charmanderstarter.png';
 import bulbasaur from '../../../public/bulbasaurstarter.png';
@@ -13,24 +13,39 @@ const STARTER_POKEMON = [
   { name: 'Squirtle', image: squirtle }
 ];
 
+// Function to get a random number between 0 and 1 with equal distribution
+const getRandomNumber = () => {
+  // Using crypto.getRandomValues() for better randomization
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return array[0] / (0xffffffff + 1);
+};
+
 export function PokemonGenerator() {
   const [selectedPokemon, setSelectedPokemon] = useState<{ name: string; image: typeof charmander } | null>(null);
   const [animationState, setAnimationState] = useState<'idle' | 'shaking' | 'opening' | 'reveal'>('idle');
   const [headingText, setHeadingText] = useState('Choose Your Shopping Buddy');
+  const [preSelectedPokemon, setPreSelectedPokemon] = useState<{ name: string; image: typeof charmander } | null>(null);
+
+  // Pre-select a Pokemon on component mount with equal odds
+  useEffect(() => {
+    const randomValue = getRandomNumber();
+    // Divide the range 0-1 into three equal parts
+    const index = Math.floor(randomValue * 3);
+    setPreSelectedPokemon(STARTER_POKEMON[index]);
+  }, []);
 
   const chooseStarter = () => {
     setHeadingText('Your Shopping Buddy is...');
     setAnimationState('shaking');
     setSelectedPokemon(null);
     
-    const randomIndex = Math.floor(Math.random() * STARTER_POKEMON.length);
-    
     // Sequence of animations
     setTimeout(() => {
       setAnimationState('opening');
       setTimeout(() => {
         setAnimationState('reveal');
-        setSelectedPokemon(STARTER_POKEMON[randomIndex]);
+        setSelectedPokemon(preSelectedPokemon);
       }, 1000);
     }, 3000);
   };
@@ -67,7 +82,6 @@ export function PokemonGenerator() {
                 fill
                 priority
                 quality={100}
-                placeholder="blur"
                 className="object-contain"
               />
             </div>
@@ -93,50 +107,6 @@ export function PokemonGenerator() {
         >
           Generate
         </Button>
-
-        <style jsx global>{`
-          @keyframes shake {
-            0% { transform: translateX(0) rotate(0deg); }
-            15% { transform: translateX(-15px) rotate(-2deg); }
-            30% { transform: translateX(15px) rotate(2deg); }
-            45% { transform: translateX(-12px) rotate(-1deg); }
-            60% { transform: translateX(12px) rotate(1deg); }
-            75% { transform: translateX(-8px) rotate(-0.5deg); }
-            90% { transform: translateX(8px) rotate(0.5deg); }
-            100% { transform: translateX(0) rotate(0deg); }
-          }
-
-          @keyframes flash {
-            0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-          }
-
-          @keyframes fade-in {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-
-          .pokeball {
-            transition: transform 0.3s ease;
-          }
-
-          .pokeball.shaking {
-            animation: shake 1.5s ease-in-out infinite;
-          }
-
-          .pokeball.opening {
-            transform: scale(1.2) rotate(180deg);
-          }
-
-          .animate-flash {
-            animation: flash 0.5s ease-in-out;
-          }
-
-          .animate-fade-in {
-            animation: fade-in 0.5s ease-out;
-          }
-        `}</style>
       </div>
     </>
   );
