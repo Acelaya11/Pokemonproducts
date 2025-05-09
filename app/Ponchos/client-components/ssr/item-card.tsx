@@ -25,6 +25,9 @@ export default function ItemCard({ item }: ItemCardProps) {
           alt={item.item_name}
           className={`w-full h-full object-cover ${isLoading ? 'opacity-0' : 'opacity-100'}`}
           onLoad={() => setIsLoading(false)}
+          quality={85}
+          placeholder="blur"
+          sizes="(max-width: 768px) 100vw, 375px"
         />
       </div>
       

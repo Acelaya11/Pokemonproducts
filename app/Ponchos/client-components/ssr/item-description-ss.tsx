@@ -54,6 +54,10 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                 className="rounded-lg object-cover relative z-20"
                 onLoad={() => setIsLoading(false)}
                 onError={() => setIsLoading(false)}
+                priority
+                quality={100}
+                placeholder="blur"
+                sizes="(max-width: 768px) 100vw, 400px"
               />
 
               {/* Image Counter */}
@@ -69,6 +73,10 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
               className="rounded-lg object-cover relative z-10"
               onLoad={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}
+              priority
+              quality={100}
+              placeholder="blur"
+              sizes="(max-width: 768px) 100vw, 400px"
             />
           )}
         </div>
@@ -102,6 +110,8 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                     src={image}
                     alt={`Thumbnail ${index + 1}`}
                     className="w-full h-full object-cover"
+                    quality={75}
+                    placeholder="blur"
                   />
                 </Button>
               ))}

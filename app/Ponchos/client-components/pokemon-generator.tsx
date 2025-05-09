@@ -65,6 +65,9 @@ export function PokemonGenerator() {
                 src={selectedPokemon.image}
                 alt={selectedPokemon.name}
                 fill
+                priority
+                quality={100}
+                placeholder="blur"
                 className="object-contain"
               />
             </div>
