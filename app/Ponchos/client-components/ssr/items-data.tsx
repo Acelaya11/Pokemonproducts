@@ -181,7 +181,7 @@ export const featuredCards: items[] = [
       set: 'Prismatic evolutions',
       set_id: 'prismatic evolutions',
       psa_grade: '9',
-      price: 1300.00,
+      price: 1200.00,
       imageUrl: umbreon161,
       additionalImages: [umbreon161],
       releaseDate: '2025-01-17',
@@ -1642,7 +1642,7 @@ export const featuredCards: items[] = [
       series: 'Sword & Shield',
       set_id: 'crown zenith',
       release_date: '2023-01-20',
-      price: 130.00,
+      price: 120.00,
       imageUrl: crownzenithetb1,
       additionalImages: [crownzenithetb1, crownzenithetb2],
       description: "A ETB from the Crown Zenith expansion of Sword & Shield series.",
@@ -1670,167 +1670,20 @@ export const featuredCards: items[] = [
     },
     { 
       id: 90,
-      id_name: "eevee accessory pouch special collection",
-      item_name: "Eevee Accessory Pouch",
-      product_type: 'Special',
-      series: 'Scarlet & Violet',
-      set_id: 'prismatic evolutions',
-      release_date: '2025-04-25',
-      price: 70.00,
-      imageUrl: eeveepouch,
-      additionalImages: [eeveepouch, eeveepouchback],
-      description: "A special Eevee-themed pouch containing 5 booster packs.",
-      contents: {
-        packs: 5,
-        other_items: ['Eevee-themed pouch']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 91,
-      id_name: "lillies clefairy premium collection",
-      item_name: "Lillie's Premium Collection",
-      product_type: 'Booster Bundle',
-      series: 'Scarlet & Violet',
-      set_id: 'journey together',
-      release_date: '2025-03-28',
-      price: 75.00,
-      imageUrl: lilliespremfront,
-      additionalImages: [lilliespremfront, lilliespremside, lilliespremsidetwo, lilliespremback],
-      description: "A premium collection featuring Lillie and her Pokemon.",
-      contents: {
-        packs: 6,
-        promos: 1,
-        other_items: ["Lillie's Clefairy full art card", 'Premium storage box']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 92,
-      id_name: "crown zenith regieleki v collection",
-      item_name: "Crown Zenith Regieleki V",
-      product_type: 'EX Box',
-      series: 'Sword & Shield',
-      set_id: 'crown zenith',
-      release_date: '2023-01-20',
-      price: 40.00,
-      imageUrl: crownzenith1,
-      additionalImages: [crownzenith1, crownzenith2],
-      description: "A booster box from the Crown Zenith expansion of Sword & Shield series.",
-      contents: {
-        packs: 4
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 93,
-      id_name: "hops zacian ex box collection",
-      item_name: "Zacian EX Box",
-      product_type: 'EX Box',
-      series: 'Sword & Shield',
-      set_id: 'sword & shield',
-      release_date: '2020-02-07',
-      price: 28.00,
-      imageUrl: zacianexbox1,
-      additionalImages: [zacianexbox1, zacianexbox2],
-      description: "A special box featuring Zacian EX with 3 booster packs.",
-      contents: {
-        packs: 4,
-        promos: 1,
-        other_items: ['Zacian EX promo card']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 94,
-      id_name: "ponchos pouch bundle",
+      id_name: "ponchos pouch bundle 1",
       item_name: "Poncho's Pouch Bundle",
       product_type: 'Poncho Special',
       series: 'Scarlet & Violet',
-      set_id: 'journey together',
+      set_id: 'paldean fates',
       release_date: '2025-04-26',
-      price: 55.00,
+      price: 50.00,
       imageUrl: ponchospouch1,
       additionalImages: [ponchospouch1, ponchospouch2, ponchospouch3, ponchospouch4],
       description: "A special bundle featuring various booster packs and a premium pouch.",
       contents: {
-        packs: 2,
-        other_items: ['Eevee-themed pouch', 'Dual pack', 'Master ball']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 95,
-      id_name: "ponchos pouch bundle 2",
-      item_name: "Poncho's Pouch Bundle",
-      product_type: 'Poncho Special',
-      series: 'Scarlet & Violet',
-      set_id: 'journey together',
-      release_date: '2025-04-26',
-      price: 55.00,
-      imageUrl: ponchospouch1,
-      additionalImages: [ponchospouch1, ponchospouch2, ponchospouch3, ponchospouch4],
-      description: "A special bundle featuring various booster packs and a premium pouch.",
-      contents: {
-        packs: 2,
-        other_items: ['Eevee-themed pouch', 'Dual pack', 'Master ball']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 96,
-      id_name: "zacian ex box 2",
-      item_name: "Zacian EX Box",
-      product_type: 'EX Box',
-      series: 'Sword & Shield',
-      set_id: 'sword & shield',
-      release_date: '2020-02-07',
-      price: 28.00,
-      imageUrl: zacianexbox1,
-      additionalImages: [zacianexbox1, zacianexbox2],
-      description: "A special box featuring Zacian EX with 3 booster packs.",
-      contents: {
-        packs: 4,
-        promos: 1,
-        other_items: ['Zacian EX promo card']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 97,
-      id_name: "lillies premium collection 2",
-      item_name: "Lillie's Premium Collection",
-      product_type: 'Booster Bundle',
-      series: 'Scarlet & Violet',
-      set_id: 'journey together',
-      release_date: '2025-03-28',
-      price: 75.00,
-      imageUrl: lilliespremfront,
-      additionalImages: [lilliespremfront, lilliespremside, lilliespremsidetwo, lilliespremback],
-      description: "A premium collection featuring Lillie and her Pokemon.",
-      contents: {
-        packs: 6,
-        promos: 1,
-        other_items: ["Lillie's Clefairy full art card", 'Premium storage box']
-      },
-      type: 'sealed'
-    },
-    { 
-      id: 98,
-      id_name: "eevee accessory pouch special collection 2",
-      item_name: "Eevee Accessory Pouch",
-      product_type: 'Special',
-      series: 'Scarlet & Violet',
-      set_id: 'prismatic evolutions',
-      release_date: '2025-04-25',
-      price: 70.00,
-      imageUrl: eeveepouch,
-      additionalImages: [eeveepouch, eeveepouchback],
-      description: "A special Eevee-themed pouch containing 5 booster packs.",
-      contents: {
         packs: 5,
-        other_items: ['Eevee-themed pouch']
+        other_items: ['Eevee-themed pouch', '5 pack', 'Master ball']
       },
       type: 'sealed'
-    }
+    },
 ];
