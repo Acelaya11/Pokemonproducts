@@ -90,10 +90,16 @@ import crownzenithetb2 from '../../images/crownzenithetbback.jpg';
 import journeytogether1 from '../../images/jtboosterbox.jpg';
 import journeytogether2 from '../../images/jtboosterboxside.jpg';
 import journeytogether3 from '../../images/jtboosterboxback.jpg';
-import ponchospouch1 from '../../images/ponchobundle.jpg';
-import ponchospouch2 from '../../images/jtdualpack.jpg';
-import ponchospouch3 from '../../images/masterballcrotch.jpg';
-import ponchospouch4 from '../../images/pouch.jpg';
+import prismaticetb from '../../images/prismaticetb.jpg';
+import pikachuvmaxbox from '../../images/pikachuvmaxbox.jpg';
+import pikachuvmaxbox2 from '../../images/pikachuvmaxboxback.jpg';
+import squirtletin from '../../images/squirtletin1.jpg';
+import mewtin from '../../images/mewtin1.jpg';
+import dragonitetin from '../../images/dragonitetin1.jpg';
+import charmandertin from '../../images/charmandertin1.jpg';
+import charizardtin from '../../images/charizardtin1.jpg';
+import darkraitin from '../../images/bigdarkraitin.jpg';
+import darkraitin2 from '../../images/bigdarkraitinback.jpg';
 
 
 
@@ -843,7 +849,7 @@ export const featuredCards: items[] = [
     },
     { 
       id: 42,
-      id_name: "iron crown ex 158", 
+      id_name: "iron crown ex 158",
       item_name: "Iron Crown EX", 
       energy_type: 'Psychic',
       rarities: ['Special Illustration Rare'],
@@ -1660,20 +1666,140 @@ export const featuredCards: items[] = [
     },
     { 
       id: 90,
-      id_name: "ponchos pouch bundle 1",
-      item_name: "Poncho's Pouch Bundle",
-      product_type: 'Poncho Special',
+      id_name: "prismatic evolutions evolution elite trainer box etb",
+      item_name: "Prismatic Evolutions ETB",
+      product_type: 'ETB',
       series: 'Scarlet & Violet',
-      set_id: 'paldean fates',
-      release_date: '2025-04-26',
-      price: 50.00,
-      imageUrl: ponchospouch1,
-      additionalImages: [ponchospouch1, ponchospouch2, ponchospouch3, ponchospouch4],
-      description: "A special bundle featuring various booster packs and a premium pouch.",
+      set_id: 'prismatic evolutions',
+      release_date: '2025-01-17',
+      price: 100.00,
+      imageUrl: prismaticetb,
+      additionalImages: [prismaticetb],
+      description: "An Elite Trainer Box from the Prismatic Evolutions expansion from the Scarlet & Violet series.",
       contents: {
-        packs: 5,
-        other_items: ['Eevee-themed pouch', '5 pack', 'Master ball']
+        packs: 9
       },
       type: 'sealed'
     },
+    { 
+      id: 91,
+      id_name: "pikachu vmax box",
+      item_name: "Pikachu VMAX Box",
+      product_type: 'Special',
+      series: 'Sword & Shield',
+      set_id: 'crown zenith',
+      release_date: '2023-01-20',
+      price: 80.00,
+      imageUrl: pikachuvmaxbox,
+      additionalImages: [pikachuvmaxbox, pikachuvmaxbox2],
+      description: "A special premium collection box featuring Pikachu VMAX from the Crown Zenith set.",
+      contents: {
+        packs: 7,
+        promos: 2
+      },
+      type: 'sealed'
+    },
+    { 
+      id: 92,
+      id_name: "squirtle tin",
+      item_name: "Squirtle Tin",
+      product_type: 'Special',
+      series: 'Sword & Shield',
+      set_id: 'sword & and shield',
+      release_date: '2021-10-08',
+      price: 20.00,
+      imageUrl: squirtletin,
+      additionalImages: [squirtletin],
+      description: "A special tin featuring Squirtle, 2 booster packs, and a coin.",
+      contents: {
+        packs: 2,
+      },
+      type: 'sealed'
+    },
+    { 
+      id: 93,
+      id_name: "mew tin",
+      item_name: "Mew Tin",
+      product_type: 'Special',
+      series: 'Scarlet & Violet',
+      set_id: 'scarlet & violet',
+      release_date: '2023-03-31',
+      price: 20.00,
+      imageUrl: mewtin,
+      additionalImages: [mewtin],
+      description: "A special tin featuring Mew, 2 booster packs, and a coin.",
+      contents: {
+        packs: 2,
+      },
+      type: 'sealed'
+    },
+    { 
+      id: 94,
+      id_name: "dragonite tin",
+      item_name: "Dragonite Tin",
+      product_type: 'Special',
+      series: 'Scarlet & Violet',
+      set_id: 'scarlet & violet',
+      release_date: '2023-03-31',
+      price: 20.00,
+      imageUrl: dragonitetin,
+      additionalImages: [dragonitetin],
+      description: "A special tin featuring Dragonite, 2 booster packs, and a coin.",
+      contents: {
+        packs: 2,
+      },
+      type: 'sealed'
+    },
+    { 
+      id: 95,
+      id_name: "charmander tin",
+      item_name: "Charmander Tin",
+      product_type: 'Special',
+      series: 'Sword & Shield',
+      set_id: 'sword & and shield',
+      release_date: '2021-10-08',
+      price: 20.00,
+      imageUrl: charmandertin,
+      additionalImages: [charmandertin],
+      description: "A special tin featuring Charmander, 2 booster packs, and a coin.",
+      contents: {
+        packs: 2,
+      },
+      type: 'sealed'
+    },
+    { 
+      id: 96,
+      id_name: "charizard tin",
+      item_name: "Charizard Tin",
+      product_type: 'Special',
+      series: 'Sword & Shield',
+      set_id: 'sword & and shield',
+      release_date: '2021-10-08',
+      price: 20.00,
+      imageUrl: charizardtin,
+      additionalImages: [charizardtin],
+      description: "A special tin featuring Charizard, 2 booster packs, and a coin.",
+      contents: {
+        packs: 2,
+      },
+      type: 'sealed'
+    },
+    { 
+      id: 97,
+      id_name: "darkrai tin",
+      item_name: "Darkrai Tin",
+      product_type: 'Special',
+      series: 'Sword & Shield',
+      set_id: 'sword & and shield',
+      release_date: '2021-10-08',
+      price: 30.00,
+      imageUrl: darkraitin,
+      additionalImages: [darkraitin, darkraitin2],
+      description: "A special tin featuring Darkrai, 3 foil cards, and 3 Booster Packs.",
+      contents: {
+        packs: 3,
+        promos: 1
+      },
+      type: 'sealed'
+    }
 ];
