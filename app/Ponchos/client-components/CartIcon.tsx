@@ -23,6 +23,7 @@ export function CartIcon() {
   const [email, setEmail] = useState<string | null>(null);
   const [message, setMessage] = useState('');
   const [showEmailErrors, setShowEmailErrors] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (totalItems === 0) {
     if (isOpen) setIsOpen(false);
@@ -90,6 +91,38 @@ export function CartIcon() {
         duration: 3000,
         position: 'top-center',
       });
+    }
+  };
+
+  const handleCheckout = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          items,
+          email: email || undefined
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('Failed to create checkout session');
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to start checkout. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -163,12 +196,21 @@ export function CartIcon() {
                     Clear Cart
                   </Button>
                 </div>
-                <Button
-                  className="w-full bg-purple-700 hover:bg-purple-800 text-white"
-                  onClick={() => setContactOpen(true)}
-                >
-                  Contact Seller
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    className="w-full bg-purple-700 hover:bg-purple-800 text-white"
+                    onClick={() => setContactOpen(true)}
+                  >
+                    Contact Seller
+                  </Button>
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    onClick={handleCheckout}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Processing...' : 'Checkout'}
+                  </Button>
+                </div>
               </div>
             )}
           </div>

@@ -37,7 +37,7 @@ export default function HomePage() {
                 View Collection
               </a>
               <a 
-                href="#" 
+                href="/about" 
                 className="w-40 px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-center"
               >
                 About
