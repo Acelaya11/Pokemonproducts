@@ -12,7 +12,8 @@ import { Button } from "../../../components/ui/button";
 import Image from 'next/image';
 import { toast } from "sonner";
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { EmailMatch } from './email-match';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function CartIcon() {
   const { items, totalItems, removeItem, clearCart } = useCart();
@@ -20,9 +21,8 @@ export function CartIcon() {
   const [contactOpen, setContactOpen] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [email, setEmail] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [showEmailErrors, setShowEmailErrors] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   if (totalItems === 0) {
@@ -40,7 +40,13 @@ export function CartIcon() {
 
   const handleContactSubmit = async () => {
     if (!email) {
-      setShowEmailErrors(true);
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
       return;
     }
 
@@ -54,7 +60,7 @@ export function CartIcon() {
         },
         body: JSON.stringify({
           message: messageToSend,
-          email,
+          email: email.toLowerCase(),
           items: items.map(item => ({
             id: item.id,
             id_name: item.id_name,
@@ -221,9 +227,8 @@ export function CartIcon() {
         if (!newOpen) {
           setStatus('idle');
           setErrorMessage('');
-          setEmail(null);
+          setEmail('');
           setMessage('');
-          setShowEmailErrors(false);
         }
         setContactOpen(newOpen);
       }}>
@@ -291,7 +296,17 @@ export function CartIcon() {
                 </div>
               </div>
               
-              <EmailMatch onEmailMatch={setEmail} showErrors={showEmailErrors} />
+              <div className="space-y-2">
+                <Label className="text-white" htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-2 border border-gray-200 bg-white rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                />
+              </div>
               
               <div className="space-y-2">
                 <h4 className="text-sm font-medium text-white">Your message</h4>

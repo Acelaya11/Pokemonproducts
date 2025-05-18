@@ -10,20 +10,27 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { EmailMatch } from './email-match';
 import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function QADialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [question, setQuestion] = useState('');
-  const [validEmail, setValidEmail] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
   const [requestId, setRequestId] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    if (!validEmail) {
-      toast.error('Please enter matching email addresses');
+    if (!email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
       return;
     }
 
@@ -39,7 +46,7 @@ export function QADialog() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: validEmail,
+          email: email.toLowerCase(),
           question: question.trim(),
         }),
       });
@@ -61,7 +68,7 @@ export function QADialog() {
       setTimeout(() => {
         setIsOpen(false);
         setStatus('idle');
-        setValidEmail(null);
+        setEmail('');
         setQuestion('');
         setRequestId(null);
       }, 3000);
@@ -88,7 +95,7 @@ export function QADialog() {
         if (!newOpen) {
           setStatus('idle');
           setErrorMessage('');
-          setValidEmail(null);
+          setEmail('');
           setQuestion('');
           setRequestId(null);
         }
@@ -128,11 +135,17 @@ export function QADialog() {
             </div>
           ) : (
             <div className="space-y-4">
-              <EmailMatch 
-                onEmailMatch={setValidEmail} 
-                showErrors={true}
-                className="space-y-4"
-              />
+              <div className="space-y-2">
+                <Label className="text-white" htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-2 border border-gray-200 bg-white rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                />
+              </div>
               <div>
                 <label htmlFor="question" className="block text-sm font-medium text-white mb-1">
                   Your Question

@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { items } from './items-data';
 import { Button } from "../../../../components/ui/button";
 import Image from 'next/image';
-import { EmailMatch } from '../email-match';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface ContactFormProps {
   item: items;
@@ -12,8 +14,7 @@ interface ContactFormProps {
 export function ContactForm({ item, onSubmit }: ContactFormProps) {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [email, setEmail] = useState<string | null>(null);
-  const [showEmailErrors, setShowEmailErrors] = useState(false);
+  const [email, setEmail] = useState('');
   const [isSent, setIsSent] = useState(false);
   
   const defaultMessage = "Hi, I'm interested in this item. Is it still available?";
@@ -24,11 +25,20 @@ export function ContactForm({ item, onSubmit }: ContactFormProps) {
 
   const handleSubmit = () => {
     if (isSent) return;
-    setShowEmailErrors(true);
-    if (!email) return;
+    if (!email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
     const messageToSend = message.trim() || defaultMessage;
     setIsSent(true);
-    onSubmit(messageToSend, email, item.id);
+    onSubmit(messageToSend, email.toLowerCase(), item.id);
   };
 
   return (
@@ -61,7 +71,17 @@ export function ContactForm({ item, onSubmit }: ContactFormProps) {
         </div>
       </div>
       
-      <EmailMatch onEmailMatch={setEmail} showErrors={showEmailErrors} />
+      <div className="space-y-2">
+        <Label className="text-white" htmlFor="email">Email Address</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-2 border border-gray-200 bg-white rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+        />
+      </div>
       
       <div className="space-y-2">
         <h4 className="text-sm font-medium text-white">Your message</h4>
