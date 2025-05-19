@@ -25,13 +25,14 @@ export function CartIcon() {
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const MINIMUM_PURCHASE = 5;
+  const total = items.reduce((sum, item) => sum + item.price, 0);
+
   if (totalItems === 0) {
     if (isOpen) setIsOpen(false);
     if (contactOpen) setContactOpen(false);
     return null;
   }
-
-  const total = items.reduce((sum, item) => sum + item.price, 0);
 
   const handleClearCart = () => {
     clearCart();
@@ -101,6 +102,11 @@ export function CartIcon() {
   };
 
   const handleCheckout = async () => {
+    if (total < MINIMUM_PURCHASE) {
+      toast.error(`Minimum purchase amount of $${MINIMUM_PURCHASE} is required`);
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await fetch('/api/create-checkout-session', {
@@ -202,6 +208,11 @@ export function CartIcon() {
                     Clear Cart
                   </Button>
                 </div>
+                {total < MINIMUM_PURCHASE && (
+                  <p className="text-red-500 text-sm mb-4">
+                    Minimum purchase amount of ${MINIMUM_PURCHASE} is required
+                  </p>
+                )}
                 <div className="flex flex-col gap-2">
                   <Button
                     className="w-full bg-purple-700 hover:bg-purple-800 text-white"
@@ -212,7 +223,7 @@ export function CartIcon() {
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700 text-white"
                     onClick={handleCheckout}
-                    disabled={isLoading}
+                    disabled={isLoading || total < MINIMUM_PURCHASE}
                   >
                     {isLoading ? 'Processing...' : 'Checkout'}
                   </Button>

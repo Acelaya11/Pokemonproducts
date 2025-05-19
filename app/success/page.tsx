@@ -11,24 +11,29 @@ function SuccessContent() {
 
   useEffect(() => {
     if (!sessionId) {
-      router.push('/');
+      router.push('/Ponchos');
     }
   }, [sessionId, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-500">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-        <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h1>
-        <p className="text-gray-600 mb-6">
-          Thank you for your purchase. We&apos;ll process your order shortly.
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-500 p-4">
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+        <CheckCircle2 className="w-12 h-12 sm:w-16 sm:h-16 text-green-500 mx-auto mb-4" />
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Order Successful!</h1>
+        <p className="text-sm sm:text-base text-gray-600 mb-4">
+          Thank you for your purchase! We&apos;ll process your order and get back to you shortly.
         </p>
-        <button
-          onClick={() => router.push('/')}
-          className="bg-purple-700 text-white px-6 py-2 rounded-md hover:bg-purple-800 transition-colors"
-        >
-          Return to Home
-        </button>
+        <div className="space-y-3">
+          <p className="text-xs sm:text-sm text-gray-500 break-all">
+            Order Reference: {sessionId}
+          </p>
+          <button
+            onClick={() => router.push('/Ponchos')}
+            className="w-full sm:w-auto bg-purple-700 text-white px-6 py-2 rounded-md hover:bg-purple-800 transition-colors"
+          >
+            Return to Shop
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -37,8 +42,8 @@ function SuccessContent() {
 export default function Success() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-500">
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-500 p-4">
+        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-md w-full text-center">
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
