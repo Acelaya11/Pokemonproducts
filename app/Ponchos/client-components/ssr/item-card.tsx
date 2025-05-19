@@ -45,7 +45,7 @@ export default function ItemCard({ item }: ItemCardProps) {
             <>
               <p className="text-sm text-zinc-300">Type: {item.product_type}</p>
               <p className="text-sm text-zinc-300">Series: {item.series}</p>
-              <p className="text-sm text-zinc-300">Packs: {item.contents.packs || 1}</p>
+              <p className="text-sm text-zinc-300">Packs: {item.packs || 1}</p>
             </>
           )}
           <p className="text-lg font-bold text-white">${item.price.toFixed(2)}</p>
