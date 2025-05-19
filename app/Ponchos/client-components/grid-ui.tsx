@@ -77,10 +77,10 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         ['Common', 'Uncommon', 'Rare', 'Double Rare', 'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare', 'Promo', 'Shiny Rare', 'Gallery', 'Super Rare'].includes(cat)
       ) as Rarity[];
       const selectedExtras = selectedCategories.filter(cat => 
-        ['Holo', 'Reverse Holo', 'EX', 'V', 'VMAX', 'VSTAR', 'Secret Rare', 'Super Rare'].includes(cat)
-      ) as ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Super Rare')[];
+        ['Holo', 'Reverse Holo', 'EX', 'V', 'VMAX', 'VSTAR', 'Secret Rare'].includes(cat)
+      ) as ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare')[];
       const selectedProductTypes = selectedCategories.filter(cat =>
-        ['Booster Pack', 'Booster Sleeve', '3pk Blister', 'B & B Deck', 'Booster Bundle', 'ETB', 'Booster Box', 'EX Box', 'Poncho Special', 'Special'].includes(cat)
+        ['Booster Pack', 'Booster Sleeve', '3pk Blister', 'B & B Deck', 'Booster Bundle', 'ETB', 'Booster Box', 'EX Box', 'Tins', 'Poncho Special', 'Special'].includes(cat)
       );
       const selectedExpansions = selectedCategories.filter(cat =>
         ['Scarlet & Violet', 'Sword & Shield', 'Sun & Moon', 'XY'].includes(cat)

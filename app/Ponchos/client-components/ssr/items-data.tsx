@@ -114,7 +114,7 @@ export interface CardItem {
     item_name: string;
     energy_type: 'Fire' | 'Water' | 'Grass' | 'Colorless' | 'Lightning' | 'Psychic' | 'Fighting' | 'Dragon' | 'Darkness' | 'Metal' | 'Fairy' | 'None';
     rarities: ('Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'Special Illustration Rare' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare')[];
-    extra_types: ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Super Rare')[];
+    extra_types: ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare')[];
     set: string;
     set_id: string;
     psa_grade: string;
@@ -130,7 +130,7 @@ export interface SealedProduct {
     id: number;
     id_name: string;
     item_name: string;
-    product_type: 'Booster Pack' | 'Booster Sleeve' | '3pk Blister' | 'B & B Deck' | 'Booster Bundle' | 'ETB' | 'Booster Box' | 'EX Box' | 'Poncho Special' | 'Special';
+    product_type: 'Booster Pack' | 'Booster Sleeve' | '3pk Blister' | 'B & B Deck' | 'Booster Bundle' | 'ETB' | 'Booster Box' | 'EX Box' | 'Tins' | 'Poncho Special' | 'Special';
     series: string;
     set_id: string;
     release_date: string;
@@ -1703,7 +1703,7 @@ export const featuredCards: items[] = [
       id: 92,
       id_name: "squirtle tin",
       item_name: "Squirtle Tin",
-      product_type: 'Special',
+      product_type: 'Tins',
       series: 'Sword & Shield',
       set_id: 'sword & and shield',
       release_date: '2021-10-08',
@@ -1720,7 +1720,7 @@ export const featuredCards: items[] = [
       id: 93,
       id_name: "mew tin",
       item_name: "Mew Tin",
-      product_type: 'Special',
+      product_type: 'Tins',
       series: 'Scarlet & Violet',
       set_id: 'scarlet & violet',
       release_date: '2023-03-31',
@@ -1737,7 +1737,7 @@ export const featuredCards: items[] = [
       id: 94,
       id_name: "dragonite tin",
       item_name: "Dragonite Tin",
-      product_type: 'Special',
+      product_type: 'Tins',
       series: 'Scarlet & Violet',
       set_id: 'scarlet & violet',
       release_date: '2023-03-31',
@@ -1754,7 +1754,7 @@ export const featuredCards: items[] = [
       id: 95,
       id_name: "charmander tin",
       item_name: "Charmander Tin",
-      product_type: 'Special',
+      product_type: 'Tins',
       series: 'Sword & Shield',
       set_id: 'sword & and shield',
       release_date: '2021-10-08',
@@ -1771,7 +1771,7 @@ export const featuredCards: items[] = [
       id: 96,
       id_name: "charizard tin",
       item_name: "Charizard Tin",
-      product_type: 'Special',
+      product_type: 'Tins',
       series: 'Sword & Shield',
       set_id: 'sword & and shield',
       release_date: '2021-10-08',
@@ -1788,7 +1788,7 @@ export const featuredCards: items[] = [
       id: 97,
       id_name: "darkrai tin",
       item_name: "Darkrai Tin",
-      product_type: 'Special',
+      product_type: 'Tins',
       series: 'Sword & Shield',
       set_id: 'sword & and shield',
       release_date: '2021-10-08',

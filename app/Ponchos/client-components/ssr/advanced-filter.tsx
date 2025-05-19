@@ -45,6 +45,7 @@ export const initialCategories: Category[] = [
   { id: 'ETB', name: 'ETB', checked: false, type: 'sealed_type' },
   { id: 'Booster Box', name: 'Booster Box', checked: false, type: 'sealed_type' },
   { id: 'EX Box', name: 'EX Box', checked: false, type: 'sealed_type' },
+  { id: 'Tins', name: 'Tins', checked: false, type: 'sealed_type' },
   { id: 'Poncho Special', name: 'Poncho Special', checked: false, type: 'sealed_type' },
   { id: 'Special', name: 'Special', checked: false, type: 'sealed_type' },
 
@@ -93,8 +94,7 @@ export const initialCategories: Category[] = [
   { id: 'V', name: 'V', checked: false, type: 'extra' },
   { id: 'VMAX', name: 'VMAX', checked: false, type: 'extra' },
   { id: 'VSTAR', name: 'VSTAR', checked: false, type: 'extra' },
-  { id: 'Secret Rare', name: 'Secret Rare', checked: false, type: 'extra' },
-  { id: 'Super Rare', name: 'Super Rare', checked: false, type: 'extra' }
+  { id: 'Secret Rare', name: 'Secret Rare', checked: false, type: 'extra' }
 ];
 
 export const updateCategories = (currentCategories: Category[], categoryId: string): Category[] => {
