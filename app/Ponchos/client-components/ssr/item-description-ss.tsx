@@ -156,8 +156,8 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
               </div>
               
               <div className="flex justify-between">
-                <span className="font-medium text-white">Release Date:</span> 
-                <span className="text-white">{item.releaseDate}</span>
+                <span className="font-medium text-white">Upload Date:</span> 
+                <span className="text-white">{item.uploadDate}</span>
               </div>
             </>
           ) : (
@@ -173,28 +173,28 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
               </div>
               
               <div className="flex justify-between">
-                <span className="font-medium text-white">Release Date:</span> 
-                <span className="text-white">{item.release_date}</span>
+                <span className="font-medium text-white">Upload Date:</span> 
+                <span className="text-white">{item.uploadDate}</span>
               </div>
               
-              {item.contents.packs && (
-                <div className="flex justify-between">
-                  <span className="font-medium text-white">Packs:</span> 
-                  <span className="text-white">{item.contents.packs}</span>
+              {item.packs && (
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-400">Packs:</span>
+                  <span className="text-white">{item.packs}</span>
                 </div>
               )}
               
-              {item.contents.promos && (
-                <div className="flex justify-between">
-                  <span className="font-medium text-white">Promos:</span> 
-                  <span className="text-white">{item.contents.promos}</span>
+              {item.promos && (
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-400">Promos:</span>
+                  <span className="text-white">{item.promos}</span>
                 </div>
               )}
               
-              {item.contents.other_items && item.contents.other_items.length > 0 && (
-                <div className="flex justify-between">
-                  <span className="font-medium text-white">Other Items:</span> 
-                  <span className="text-white">{item.contents.other_items.join(', ')}</span>
+              {item.other_items && item.other_items.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-400">Other Items:</span>
+                  <span className="text-white">{item.other_items.join(', ')}</span>
                 </div>
               )}
             </>

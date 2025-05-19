@@ -16,7 +16,9 @@ export default function RecentlyAdded({ className = '' }: RecentlyAddedProps) {
   const [selectedItem, setSelectedItem] = useState<items | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
-  const recentItems = featuredCards.slice(-10).reverse(); // Get last 10 items and reverse to show newest first
+  const recentItems = [...featuredCards]
+    .sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime())
+    .slice(0, 10); // Get 10 most recent items
 
   const handleViewDetails = (item: items) => {
     setSelectedItem(item);

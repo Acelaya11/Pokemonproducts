@@ -13,7 +13,7 @@ interface ItemGridProps {
   selectedCategories: string[];
 }
 
-type SortField = 'price' | 'psa_grade' | 'releaseDate' | 'release_date';
+type SortField = 'price' | 'psa_grade' | 'uploadDate';
 type SortDirection = 'asc' | 'desc' | null;
 type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'Special Illustration Rare' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare';
 
@@ -175,9 +175,9 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
     // Apply sorting
     if (sortField && sortDirection) {
       result = [...result].sort((a, b) => {
-        if (sortField === 'releaseDate' || sortField === 'release_date') {
-          const dateA = new Date(a.type === 'card' ? a.releaseDate : a.release_date);
-          const dateB = new Date(b.type === 'card' ? b.releaseDate : b.release_date);
+        if (sortField === 'uploadDate') {
+          const dateA = new Date(a.uploadDate);
+          const dateB = new Date(b.uploadDate);
           return sortDirection === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
         } else if (sortField === 'psa_grade') {
           // If either item is a sealed product, put it at the end
@@ -288,12 +288,12 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
                 <SortIcon field="psa_grade" direction={sortField === 'psa_grade' ? sortDirection : null} />
               </Button>
               <Button
-                variant="default"
-                onClick={() => handleSort('releaseDate')}
-                className="flex-1 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md hover:shadow-lg transition-all rounded-xl px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base border-0"
+                variant={sortField === 'uploadDate' ? 'default' : 'outline'}
+                onClick={() => handleSort('uploadDate')}
+                className="text-sm"
               >
-                Release Date
-                <SortIcon field="releaseDate" direction={sortField === 'releaseDate' ? sortDirection : null} />
+                Upload Date
+                <SortIcon field="uploadDate" direction={sortField === 'uploadDate' ? sortDirection : null} />
               </Button>
             </div>
           </div>
