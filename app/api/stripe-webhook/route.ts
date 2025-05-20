@@ -3,6 +3,10 @@ import { stripe } from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 import Stripe from 'stripe';
 
+// Required for Next.js 15 webhook handling
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // Stripe requires the raw body to validate the signature
 export const config = {
   api: {
@@ -29,12 +33,23 @@ export async function POST(req: Request) {
   const sig = req.headers.get('stripe-signature');
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  if (!sig || !webhookSecret) {
+    return NextResponse.json(
+      { error: 'Missing stripe-signature or webhook secret' },
+      { status: 400 }
+    );
+  }
+
   let event: Stripe.Event;
   try {
     const rawBody = await buffer(req.body as ReadableStream<Uint8Array>);
-    event = stripe.webhooks.constructEvent(rawBody, sig!, webhookSecret!);
+    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err) {
-    return NextResponse.json({ error: `Webhook Error: ${(err as Error).message}` }, { status: 400 });
+    console.error('Webhook Error:', err);
+    return NextResponse.json(
+      { error: `Webhook Error: ${(err as Error).message}` },
+      { status: 400 }
+    );
   }
 
   if (event.type === 'checkout.session.completed') {
@@ -57,7 +72,11 @@ export async function POST(req: Request) {
         }
       }
     } catch (err) {
-      return NextResponse.json({ error: `DB Update Error: ${(err as Error).message}` }, { status: 500 });
+      console.error('DB Update Error:', err);
+      return NextResponse.json(
+        { error: `DB Update Error: ${(err as Error).message}` },
+        { status: 500 }
+      );
     }
   }
 
