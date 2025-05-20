@@ -33,7 +33,13 @@ export async function POST(req: Request) {
   const sig = req.headers.get('stripe-signature');
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  // Temporary logging for debugging
+  console.log('Webhook received');
+  console.log('Signature:', sig);
+  console.log('Webhook secret exists:', !!webhookSecret);
+
   if (!sig || !webhookSecret) {
+    console.error('Missing stripe-signature or webhook secret');
     return NextResponse.json(
       { error: 'Missing stripe-signature or webhook secret' },
       { status: 400 }
