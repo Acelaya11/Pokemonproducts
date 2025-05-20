@@ -99,6 +99,7 @@ export function PokemonGenerator() {
                 priority
                 quality={100}
                 className="object-contain"
+                loading="eager"
               />
             </div>
           )}
