@@ -328,10 +328,10 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
             <div key={item.id} className="w-full">
               <div className="flex flex-col w-full mx-auto p-2 sm:p-3 rounded-lg backdrop-blur-sm">
                 <ItemCard item={item} onViewDetails={handleViewDetails} />
-                <div className="mt-3 flex flex-col sm:flex-row gap-2 w-full">
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
                   <Button 
                     variant="outline" 
-                    className="w-full sm:flex-1 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white text-sm sm:text-base h-9 sm:h-10 whitespace-nowrap transition-transform duration-300 border-0"
+                    className="w-full bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white text-sm sm:text-base h-9 sm:h-10 whitespace-nowrap transition-transform duration-300 border-0"
                     onClick={() => handleViewDetails(item)}
                   >
                     View Details
