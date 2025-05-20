@@ -22,6 +22,7 @@ export function NavigationMenu() {
           <Image 
             src={Gengar} 
             alt="Gengar" 
+            priority
             className="logo w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 shadow-lg shadow-black rounded-lg" 
           />
           {/* Navigation Links */}
@@ -45,6 +46,7 @@ export function NavigationMenu() {
         <Image 
           src={Yarn} 
           alt="Yarn" 
+          priority
           className="absolute shadow-lg shadow-black rounded-full h-12 w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 animate-drop-bounce-roll" 
         />
       </div>

@@ -79,8 +79,6 @@ export interface SealedProduct {
     additionalImages: StaticImageData[];
     description: string;
     packs: number;
-    promos?: number;
-    other_items?: string[];
     type: 'sealed';
 }
 

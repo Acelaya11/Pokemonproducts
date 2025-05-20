@@ -38,7 +38,6 @@ export default function MiasPage() {
             alt="Dark Banette"
             className="w-full max-w-[800px] h-auto object-contain rounded-lg opacity-30"
             width={800}
-            height={400}
             priority
           />
         </div>

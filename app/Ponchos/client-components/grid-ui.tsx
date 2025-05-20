@@ -288,9 +288,9 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
                 <SortIcon field="psa_grade" direction={sortField === 'psa_grade' ? sortDirection : null} />
               </Button>
               <Button
-                variant={sortField === 'uploadDate' ? 'default' : 'outline'}
+                variant="default"
                 onClick={() => handleSort('uploadDate')}
-                className="text-sm"
+                className="flex-1 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md hover:shadow-lg transition-all rounded-xl px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base border-0"
               >
                 Upload Date
                 <SortIcon field="uploadDate" direction={sortField === 'uploadDate' ? sortDirection : null} />

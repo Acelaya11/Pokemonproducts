@@ -51,12 +51,11 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                 fill
                 src={item.additionalImages[currentImageIndex]} 
                 alt={`${item.item_name} - Image ${currentImageIndex + 1}`}
-                className="rounded-lg object-cover relative z-20"
+                className="rounded-lg object-cover relative z-20 transition-opacity duration-300"
                 onLoad={() => setIsLoading(false)}
                 onError={() => setIsLoading(false)}
                 priority
                 quality={100}
-                placeholder="blur"
                 sizes="(max-width: 768px) 100vw, 400px"
               />
 
@@ -70,12 +69,11 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
               fill
               src={item.imageUrl} 
               alt={item.item_name}
-              className="rounded-lg object-cover relative z-10"
+              className="rounded-lg object-cover relative z-10 transition-opacity duration-300"
               onLoad={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}
               priority
               quality={100}
-              placeholder="blur"
               sizes="(max-width: 768px) 100vw, 400px"
             />
           )}
@@ -109,9 +107,9 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                     height={64}
                     src={image}
                     alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-opacity duration-300"
                     quality={75}
-                    placeholder="blur"
+                    priority
                   />
                 </Button>
               ))}
@@ -181,20 +179,6 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                 <div className="flex items-center gap-2">
                   <span className="text-zinc-400">Packs:</span>
                   <span className="text-white">{item.packs}</span>
-                </div>
-              )}
-              
-              {item.promos && (
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-400">Promos:</span>
-                  <span className="text-white">{item.promos}</span>
-                </div>
-              )}
-              
-              {item.other_items && item.other_items.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-400">Other Items:</span>
-                  <span className="text-white">{item.other_items.join(', ')}</span>
                 </div>
               )}
             </>

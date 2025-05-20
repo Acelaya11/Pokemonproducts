@@ -47,10 +47,10 @@ export default function RecentlyAdded({ className = '' }: RecentlyAddedProps) {
                 height={192}
                 src={item.imageUrl} 
                 alt={item.item_name}
-                className={`w-full h-full object-cover ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                 onLoad={() => setIsLoading(false)}
                 quality={85}
-                placeholder="blur"
+                loading="lazy"
                 sizes="(max-width: 768px) 100vw, 192px"
               />
             </div>
