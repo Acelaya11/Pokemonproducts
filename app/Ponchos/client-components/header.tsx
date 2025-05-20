@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import logo from '../../../public/Ponchos-puchamon.png';
+import logo from '../../../public/Ponchos-Pokemon.png';
 
 export default function Header() {
   return (

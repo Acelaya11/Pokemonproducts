@@ -103,9 +103,6 @@ export default function ItemCard({ item, onViewDetails }: ItemCardProps) {
             </>
           )}
           <p className="text-xl font-bold text-white mt-2">${item.price.toFixed(2)}</p>
-          {!item.is_available && (
-            <p className="text-red-500 font-semibold mt-2">Sold</p>
-          )}
         </div>
       </div>
     </div>
