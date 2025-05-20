@@ -1,129 +1,189 @@
 import Image from 'next/image';
-import { items} from './items-data';
-import { useState} from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '../CartContext';
+import type { CardItem, SealedProduct } from './items-data';
 
 interface ItemDescriptionContentProps {
-  item: items;
+  item: CardItem | SealedProduct;
 }
 
 export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
   const { addItem, items: cartItems } = useCart();
 
   const isInCart = cartItems.some((cartItem) => cartItem.id === item.id);
 
-  const nextImage = () => {
-    if (item.additionalImages && item.additionalImages.length > 0) {
-      setCurrentImageIndex((prevIndex) => 
-        prevIndex === item.additionalImages.length - 1 ? 0 : prevIndex + 1
-      );
-      setIsLoading(true);
+  // Safely parse additionalImages
+  const additionalImages = useMemo(() => {
+    if (Array.isArray(item.additionalImages)) {
+      return item.additionalImages;
     }
-  };
+    if (typeof item.additionalImages === 'string') {
+      try {
+        return JSON.parse(item.additionalImages);
+      } catch {
+        return [item.additionalImages];
+      }
+    }
+    return [];
+  }, [item.additionalImages]);
 
-  const prevImage = () => {
-    if (item.additionalImages && item.additionalImages.length > 0) {
+  // Safely parse rarities
+  const getRarities = useCallback((cardItem: CardItem) => {
+    if (Array.isArray(cardItem.rarities)) {
+      return cardItem.rarities;
+    }
+    if (typeof cardItem.rarities === 'string') {
+      try {
+        return JSON.parse(cardItem.rarities);
+      } catch {
+        return [cardItem.rarities];
+      }
+    }
+    return [];
+  }, []);
+
+  // Preload next and previous images
+  useEffect(() => {
+    const preloadImage = (index: number) => {
+      if (index >= 0 && index < additionalImages.length) {
+        const img = new window.Image();
+        img.src = additionalImages[index];
+      }
+    };
+
+    // Preload next and previous images
+    preloadImage(currentImageIndex + 1);
+    preloadImage(currentImageIndex - 1);
+  }, [currentImageIndex, additionalImages]);
+
+  const nextImage = useCallback(() => {
+    if (additionalImages.length > 0) {
       setCurrentImageIndex((prevIndex) => 
-        prevIndex === 0 ? item.additionalImages.length - 1 : prevIndex - 1
+        prevIndex === additionalImages.length - 1 ? 0 : prevIndex + 1
       );
       setIsLoading(true);
     }
-  };
+  }, [additionalImages.length]);
+
+  const prevImage = useCallback(() => {
+    if (additionalImages.length > 0) {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === 0 ? additionalImages.length - 1 : prevIndex - 1
+      );
+      setIsLoading(true);
+    }
+  }, [additionalImages.length]);
+
+  const handleImageLoad = useCallback((index: number) => {
+    setLoadedImages(prev => new Set(prev).add(index));
+    setIsLoading(false);
+  }, []);
+
+  // Memoize the main image component
+  const MainImage = useMemo(() => (
+    <div className="relative w-full aspect-[3/4] md:w-[400px] group">
+      {isLoading && (
+        <div className="absolute inset-0 bg-zinc-800 animate-pulse z-10" />
+      )}
+      {additionalImages.length > 0 ? (
+        <>
+          <Image
+            fill
+            src={additionalImages[currentImageIndex]} 
+            alt={`${item.item_name} - Image ${currentImageIndex + 1}`}
+            className={`rounded-lg object-cover relative z-20 transition-opacity duration-300 ${
+              loadedImages.has(currentImageIndex) ? 'opacity-100' : 'opacity-0'
+            }`}
+            onLoad={() => handleImageLoad(currentImageIndex)}
+            onError={() => setIsLoading(false)}
+            priority
+            quality={85}
+            sizes="(max-width: 768px) 100vw, 400px"
+          />
+          <div className="absolute bottom-2 right-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm z-20">
+            {currentImageIndex + 1} / {additionalImages.length}
+          </div>
+        </>
+      ) : (
+        <Image
+          fill
+          src={item.imageUrl} 
+          alt={item.item_name}
+          className={`rounded-lg object-cover relative z-10 transition-opacity duration-300 ${
+            loadedImages.has(0) ? 'opacity-100' : 'opacity-0'
+          }`}
+          onLoad={() => handleImageLoad(0)}
+          onError={() => setIsLoading(false)}
+          priority
+          quality={85}
+          sizes="(max-width: 768px) 100vw, 400px"
+        />
+      )}
+    </div>
+  ), [additionalImages, currentImageIndex, item, isLoading, loadedImages, handleImageLoad]);
+
+  // Memoize the thumbnails
+  const Thumbnails = useMemo(() => (
+    additionalImages.length > 1 && (
+      <div className="flex items-center justify-center gap-2 sm:gap-4">
+        <Button
+          onClick={prevImage}
+          className="p-1.5 sm:p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          aria-label="Previous image"
+        >
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+        </Button>
+        
+        <div className="flex justify-center gap-1 sm:gap-2 py-2 w-[calc(100%-60px)] sm:w-[calc(100%-80px)] overflow-x-auto scrollbar-hide">
+          {additionalImages.map((image: string, index: number) => (
+            <Button
+              key={index}
+              onClick={() => {
+                setCurrentImageIndex(index);
+                setIsLoading(true);
+              }}
+              className={`p-0 h-12 w-12 sm:h-16 sm:w-16 rounded-md overflow-hidden border-2 transition-all ${
+                currentImageIndex === index ? 'border-black scale-105' : 'border-transparent hover:border-gray-300'
+              }`}
+            >
+              <Image
+                width={64}
+                height={64}
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  loadedImages.has(index) ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => handleImageLoad(index)}
+                quality={75}
+                loading="lazy"
+              />
+            </Button>
+          ))}
+        </div>
+
+        <Button
+          onClick={nextImage}
+          className="p-1.5 sm:p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          aria-label="Next image"
+        >
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+        </Button>
+      </div>
+    )
+  ), [additionalImages, currentImageIndex, loadedImages, handleImageLoad, nextImage, prevImage]);
 
   return (
     <div className="flex flex-col md:flex-row gap-6 p-4 md:p-5">
       {/* Item Image Column */}
       <div className="flex-shrink-0 flex flex-col space-y-2 w-full md:w-auto">
-        {/* Image Carousel */}
-        <div className="relative w-full aspect-[3/4] md:w-[400px] group">
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin z-10"></div>
-            </div>
-          )}
-          {item.additionalImages && item.additionalImages.length > 0 ? (
-            <>
-              <Image
-                fill
-                src={item.additionalImages[currentImageIndex]} 
-                alt={`${item.item_name} - Image ${currentImageIndex + 1}`}
-                className="rounded-lg object-cover relative z-20 transition-opacity duration-300"
-                onLoad={() => setIsLoading(false)}
-                onError={() => setIsLoading(false)}
-                priority
-                quality={100}
-                sizes="(max-width: 768px) 100vw, 400px"
-              />
-
-              {/* Image Counter */}
-              <div className="absolute bottom-2 right-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm z-20">
-                {currentImageIndex + 1} / {item.additionalImages.length}
-              </div>
-            </>
-          ) : (
-            <Image
-              fill
-              src={item.imageUrl} 
-              alt={item.item_name}
-              className="rounded-lg object-cover relative z-10 transition-opacity duration-300"
-              onLoad={() => setIsLoading(false)}
-              onError={() => setIsLoading(false)}
-              priority
-              quality={100}
-              sizes="(max-width: 768px) 100vw, 400px"
-            />
-          )}
-        </div>
-
-        {/* Thumbnails with Navigation */}
-        {item.additionalImages && item.additionalImages.length > 1 && (
-          <div className="flex items-center justify-center gap-2 sm:gap-4">
-            <Button
-              onClick={prevImage}
-              className="p-1.5 sm:p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-              aria-label="Previous image"
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-            
-            <div className="flex justify-center gap-1 sm:gap-2 py-2 w-[calc(100%-60px)] sm:w-[calc(100%-80px)] overflow-x-auto scrollbar-hide">
-              {item.additionalImages.map((image, index) => (
-                <Button
-                  key={index}
-                  onClick={() => {
-                    setCurrentImageIndex(index);
-                    setIsLoading(true);
-                  }}
-                  className={`p-0 h-12 w-12 sm:h-16 sm:w-16 rounded-md overflow-hidden border-2 transition-all ${
-                    currentImageIndex === index ? 'border-black scale-105' : 'border-transparent hover:border-gray-300'
-                  }`}
-                >
-                  <Image
-                    width={64}
-                    height={64}
-                    src={image}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover transition-opacity duration-300"
-                    quality={75}
-                    priority
-                  />
-                </Button>
-              ))}
-            </div>
-
-            <Button
-              onClick={nextImage}
-              className="p-1.5 sm:p-2 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white rounded-full transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-              aria-label="Next image"
-            >
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-          </div>
-        )}
+        {MainImage}
+        {Thumbnails}
       </div>
       
       {/* Item Details */}
@@ -135,22 +195,22 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
             <>
               <div className="flex justify-between">
                 <span className="font-medium text-white">Energy Type:</span> 
-                <span className="text-white">{item.energy_type}</span>
+                <span className="text-white">{(item as CardItem).energy_type}</span>
               </div>
               
               <div className="flex justify-between">
                 <span className="font-medium text-white">Rarity:</span> 
-                <span className="text-white">{item.rarities.join(', ')}</span>
+                <span className="text-white">{getRarities(item as CardItem).join(', ')}</span>
               </div>
               
               <div className="flex justify-between">
                 <span className="font-medium text-white">Set:</span> 
-                <span className="text-white">{item.set}</span>
+                <span className="text-white">{(item as CardItem).set}</span>
               </div>
               
               <div className="flex justify-between">
                 <span className="font-medium text-white">PSA Grade:</span> 
-                <span className="text-white">{item.psa_grade}</span>
+                <span className="text-white">{(item as CardItem).psa_grade}</span>
               </div>
               
               <div className="flex justify-between">
@@ -162,12 +222,12 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
             <>
               <div className="flex justify-between">
                 <span className="font-medium text-white">Product Type:</span> 
-                <span className="text-white">{item.product_type}</span>
+                <span className="text-white">{(item as SealedProduct).product_type}</span>
               </div>
               
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium text-white">Series:</span>
-                <span className="text-white">{item.series}</span>
+                <span className="text-white">{(item as SealedProduct).series}</span>
               </div>
               
               <div className="flex justify-between">
@@ -175,10 +235,10 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
                 <span className="text-white">{item.uploadDate}</span>
               </div>
               
-              {item.packs && (
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-400">Packs:</span>
-                  <span className="text-white">{item.packs}</span>
+              {(item as SealedProduct).packs && (
+                <div className="flex justify-between">
+                  <span className="font-medium text-white">Packs:</span>
+                  <span className="text-white">{(item as SealedProduct).packs}</span>
                 </div>
               )}
             </>

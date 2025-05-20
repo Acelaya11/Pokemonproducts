@@ -57,6 +57,7 @@ export function ContactForm({ item, onSubmit }: ContactFormProps) {
             alt={item.item_name} 
             className={`h-20 border-2 border-black rounded object-cover ${isLoading ? 'opacity-0' : 'opacity-100'}`}
             onLoad={() => setIsLoading(false)}
+            loading='lazy'
           />
         </div>
         <div>

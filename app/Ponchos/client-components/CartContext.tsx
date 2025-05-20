@@ -1,12 +1,11 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { StaticImageData } from 'next/image';
 
 interface CartItem {
   id: number;
   id_name: string;
   item_name: string;
   price: number;
-  imageUrl: StaticImageData;
+  imageUrl: string;
   type: 'card' | 'sealed';
   set?: string;
   series?: string;

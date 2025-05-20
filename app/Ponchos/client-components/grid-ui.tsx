@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { featuredCards, items } from './ssr/items-data';
 import { ItemDescriptionDialog } from './item-description';
 import { Button } from "../../../components/ui/button";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ItemCard from './ssr/item-card';
 import { AddToCart } from './AddToCart';
 import { CartIcon } from './CartIcon';
+import { getAllItems } from '../../../lib/data';
+import type { CardItem, SealedProduct } from './ssr/items-data';
 
 interface ItemGridProps {
   selectedCategories: string[];
@@ -18,15 +19,35 @@ type SortDirection = 'asc' | 'desc' | null;
 type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'Special Illustration Rare' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare';
 
 export default function ItemGrid({ selectedCategories }: ItemGridProps) {
-  const [selectedItem, setSelectedItem] = useState<items | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CardItem | SealedProduct | null>(null);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [setNameSearch, setSetNameSearch] = useState('');
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  const [items, setItems] = useState<(CardItem | SealedProduct)[]>([]);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 12;
   const gridRef = useRef<HTMLDivElement>(null);
+
+  // Fetch items from Supabase
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const data = await getAllItems();
+        // Sort by ID by default
+        const sortedData = [...data].sort((a, b) => a.id - b.id);
+        setItems(sortedData);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   // Reset current page when search terms change
   useEffect(() => {
@@ -55,7 +76,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
   };
 
   // Sort icon component
-  const SortIcon = ({ direction }: { field: SortField, direction: SortDirection }) => (
+  const SortIcon = ({ direction }: { direction: SortDirection }) => (
     <span className="ml-1 text-current">
       {direction ? (
         <span className="flex items-center text-current">
@@ -68,7 +89,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
   );
 
   const filteredItems = useMemo(() => {
-    let result = featuredCards.filter((item) => {
+    let result = items.filter((item) => {
       // Get selected categories by type
       const selectedEnergyTypes = selectedCategories.filter(cat => 
         ['Fire', 'Water', 'Grass', 'Colorless', 'Lightning', 'Psychic', 'Fighting', 'Dragon', 'Darkness', 'Metal', 'Fairy', 'None'].includes(cat)
@@ -105,32 +126,34 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
       if (isSealedSelected && !isCardsSelected && item.type !== 'sealed') return false;
 
       if (item.type === 'card') {
+        const cardItem = item as CardItem;
         // Check if item matches selected energy type
-        const matchesEnergyType = selectedEnergyTypes.length === 0 || selectedEnergyTypes.includes(item.energy_type);
+        const matchesEnergyType = selectedEnergyTypes.length === 0 || selectedEnergyTypes.includes(cardItem.energy_type);
 
         // Check if item matches any of the selected rarities
         const matchesRarity = selectedRarities.length === 0 || 
-          selectedRarities.some(rarity => item.rarities.includes(rarity));
+          selectedRarities.some(rarity => cardItem.rarities.includes(rarity));
 
         // Check if item matches any of the selected extra types
         const matchesExtra = selectedExtras.length === 0 || 
-          selectedExtras.some(extra => item.extra_types.includes(extra));
+          selectedExtras.some(extra => cardItem.extra_types.includes(extra));
 
         // Check if item matches selected PSA grades
         const matchesPSAGrade = selectedPSAGrades.length === 0 || 
           selectedPSAGrades.some(grade => {
             if (grade === 'Ungraded') {
-              return item.psa_grade === 'Ungraded';
+              return cardItem.psa_grade === 'Ungraded';
             }
             const numericGrade = parseInt(grade.replace('PSA ', ''));
-            return parseInt(item.psa_grade) === numericGrade;
+            return parseInt(cardItem.psa_grade) === numericGrade;
           });
 
         return matchesEnergyType && matchesRarity && matchesExtra && matchesPSAGrade;
       } else {
+        const sealedItem = item as SealedProduct;
         // For sealed products, check both product type and series
-        const matchesProductType = selectedProductTypes.length === 0 || selectedProductTypes.includes(item.product_type);
-        const matchesSeries = selectedExpansions.length === 0 || selectedExpansions.includes(item.series);
+        const matchesProductType = selectedProductTypes.length === 0 || selectedProductTypes.includes(sealedItem.product_type);
+        const matchesSeries = selectedExpansions.length === 0 || selectedExpansions.includes(sealedItem.series);
         return matchesProductType && matchesSeries;
       }
     });
@@ -144,7 +167,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         .filter(Boolean);
       
       result = result.filter(item => {
-        const itemText = `${item.id_name} ${item.item_name} ${item.type === 'card' ? item.set : item.series}`.toLowerCase()
+        const itemText = `${item.id_name} ${item.item_name} ${item.type === 'card' ? (item as CardItem).set : (item as SealedProduct).series}`.toLowerCase()
           .replace(/'/g, ''); // Remove ' characters from item text
         return searchKeywords.every(keyword => {
           // Split the item text into words
@@ -163,7 +186,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         .filter(Boolean);
       
       result = result.filter(item => {
-        const setText = (item.type === 'card' ? item.set_id : item.set_id).toLowerCase()
+        const setText = item.set_id.toLowerCase()
           .replace(/'/g, ''); // Remove ' characters from set text
         const words = setText.split(/\s+/);
         return setKeywords.every(keyword => 
@@ -179,33 +202,22 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
           const dateA = new Date(a.uploadDate);
           const dateB = new Date(b.uploadDate);
           return sortDirection === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+        } else if (sortField === 'price') {
+          return sortDirection === 'asc' ? a.price - b.price : b.price - a.price;
         } else if (sortField === 'psa_grade') {
-          // If either item is a sealed product, put it at the end
-          if (a.type === 'sealed' && b.type === 'sealed') return 0;
-          if (a.type === 'sealed') return 1; // Place sealed products at end
-          if (b.type === 'sealed') return -1; // Place sealed products at end
-
-          // Both items are cards, handle grading
-          if (a.type === 'card' && b.type === 'card') {
-            // Handle cases where either item is ungraded
-            if (a.psa_grade === 'Ungraded' && b.psa_grade === 'Ungraded') return 0;
-            if (a.psa_grade === 'Ungraded') return 1; // Place ungraded at end
-            if (b.psa_grade === 'Ungraded') return -1; // Place ungraded at end
-            
-            const gradeA = parseInt(a.psa_grade);
-            const gradeB = parseInt(b.psa_grade);
-            return sortDirection === 'asc' ? gradeA - gradeB : gradeB - gradeA;
-          }
-          return 0;
+          const gradeA = (a as CardItem).psa_grade === 'Ungraded' ? 0 : parseInt((a as CardItem).psa_grade);
+          const gradeB = (b as CardItem).psa_grade === 'Ungraded' ? 0 : parseInt((b as CardItem).psa_grade);
+          return sortDirection === 'asc' ? gradeA - gradeB : gradeB - gradeA;
         }
-        return sortDirection === 'asc' 
-          ? a.price - b.price
-          : b.price - a.price;
+        return 0;
       });
+    } else {
+      // Default sort by ID if no other sort is selected
+      result = [...result].sort((a, b) => a.id - b.id);
     }
 
     return result;
-  }, [selectedCategories, searchTerm, setNameSearch, sortField, sortDirection]);
+  }, [selectedCategories, searchTerm, setNameSearch, sortField, sortDirection, items]);
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -215,7 +227,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
     [filteredItems, startIndex, endIndex]
   );
 
-  const handleViewDetails = useCallback((item: items) => {
+  const handleViewDetails = useCallback((item: CardItem | SealedProduct) => {
     setSelectedItem(item);
     setDescriptionOpen(true);
   }, []);
@@ -241,6 +253,14 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     setTimeout(scrollToTop, 100);
   }, [totalPages, scrollToTop]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -270,14 +290,14 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
                 />
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 variant="default"
                 onClick={() => handleSort('price')}
                 className="flex-1 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md hover:shadow-lg transition-all rounded-xl px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base border-0"
               >
                 Price
-                <SortIcon field="price" direction={sortField === 'price' ? sortDirection : null} />
+                <SortIcon direction={sortField === 'price' ? sortDirection : null} />
               </Button>
               <Button
                 variant="default"
@@ -285,7 +305,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
                 className="flex-1 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md hover:shadow-lg transition-all rounded-xl px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base border-0"
               >
                 PSA Grade
-                <SortIcon field="psa_grade" direction={sortField === 'psa_grade' ? sortDirection : null} />
+                <SortIcon direction={sortField === 'psa_grade' ? sortDirection : null} />
               </Button>
               <Button
                 variant="default"
@@ -293,20 +313,21 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
                 className="flex-1 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md hover:shadow-lg transition-all rounded-xl px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base border-0"
               >
                 Upload Date
-                <SortIcon field="uploadDate" direction={sortField === 'uploadDate' ? sortDirection : null} />
+                <SortIcon direction={sortField === 'uploadDate' ? sortDirection : null} />
               </Button>
             </div>
           </div>
           <p className="text-base sm:text-lg font-medium text-white">
-            Showing {filteredItems.length} of {featuredCards.length} items
+            Showing {filteredItems.length} of {items.length} items
           </p>
         </div>
 
-        <div className="grid grid-cols-1 space-y-4 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+        {/* Grid of Items */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {currentItems.map((item) => (
             <div key={item.id} className="w-full">
               <div className="flex flex-col w-full mx-auto p-2 sm:p-3 rounded-lg backdrop-blur-sm">
-                <ItemCard item={item} />
+                <ItemCard item={item} onViewDetails={handleViewDetails} />
                 <div className="mt-3 flex flex-col sm:flex-row gap-2 w-full">
                   <Button 
                     variant="outline" 
