@@ -48,7 +48,7 @@ export default function ItemCard({ item, onViewDetails }: ItemCardProps) {
 
   return (
     <div 
-      className="flex flex-col w-full bg-zinc-900 backdrop-blur-sm mb-5 rounded-lg shadow-lg shadow-black overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95 active:shadow-inner"
+      className={`flex flex-col w-full bg-zinc-900 backdrop-blur-sm mb-5 rounded-lg shadow-lg shadow-black overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95 active:shadow-inner ${!item.is_available ? 'opacity-50' : ''}`}
       onClick={() => onViewDetails?.(item)}
     >
       {/* Image Container with Fixed Dimensions */}
@@ -103,6 +103,9 @@ export default function ItemCard({ item, onViewDetails }: ItemCardProps) {
             </>
           )}
           <p className="text-xl font-bold text-white mt-2">${item.price.toFixed(2)}</p>
+          {!item.is_available && (
+            <p className="text-red-500 font-semibold mt-2">Sold</p>
+          )}
         </div>
       </div>
     </div>

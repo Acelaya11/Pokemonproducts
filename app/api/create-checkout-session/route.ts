@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 
 interface CartItem {
+  id: number;
   item_name: string;
   price: number;
   imageUrl: string;
-  type: 'card' | 'other';
+  type: 'card' | 'sealed';
   set?: string;
   psa_grade?: string;
   series?: string;
@@ -23,6 +24,10 @@ export async function POST(req: Request) {
           currency: 'usd',
           product_data: {
             name: item.item_name,
+            metadata: {
+              id: String(item.id),
+              type: item.type,
+            },
           },
           unit_amount: Math.round(item.price * 100),
         },

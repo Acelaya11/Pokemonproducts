@@ -15,7 +15,7 @@ export function AddToCart({ item }: AddToCartProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleAddToCart = () => {
-    if (alreadyInCart) return;
+    if (alreadyInCart || !item.is_available) return;
     setIsAnimating(true);
     addItem(item);
     // Reset animation after it completes
@@ -28,13 +28,16 @@ export function AddToCart({ item }: AddToCartProps) {
       className={`w-full sm:flex-1 ${
         alreadyInCart 
           ? 'bg-gray-600 hover:bg-gray-600 !cursor-not-allowed' 
+          : !item.is_available
+          ? 'bg-gray-600 hover:bg-gray-600 !cursor-not-allowed'
           : 'bg-purple-700 hover:bg-purple-800 active:bg-purple-900'
       } text-white text-sm sm:text-base h-9 sm:h-10 whitespace-nowrap transition-transform duration-300 border-0 ${
         isAnimating ? 'float-to-cart' : ''
       }`}
       onClick={handleAddToCart}
+      disabled={alreadyInCart || !item.is_available}
     >
-      {alreadyInCart ? 'In Cart' : 'Add to Cart'}
+      {alreadyInCart ? 'In Cart' : !item.is_available ? 'Sold' : 'Add to Cart'}
     </Button>
   );
 } 
