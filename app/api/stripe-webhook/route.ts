@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
+import Stripe from 'stripe';
 
 // Stripe requires the raw body to validate the signature
 export const config = {
@@ -28,16 +29,16 @@ export async function POST(req: Request) {
   const sig = req.headers.get('stripe-signature');
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  let event;
+  let event: Stripe.Event;
   try {
-    const rawBody = await buffer(req.body as any);
+    const rawBody = await buffer(req.body as ReadableStream<Uint8Array>);
     event = stripe.webhooks.constructEvent(rawBody, sig!, webhookSecret!);
   } catch (err) {
     return NextResponse.json({ error: `Webhook Error: ${(err as Error).message}` }, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as any;
+    const session = event.data.object as Stripe.Checkout.Session;
     try {
       // Retrieve the line items for this session
       const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
