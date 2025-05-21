@@ -16,7 +16,7 @@ interface ItemGridProps {
 
 type SortField = 'price' | 'psa_grade' | 'uploadDate';
 type SortDirection = 'asc' | 'desc' | null;
-type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'Special Illustration Rare' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare';
+type Rarity = 'Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'SIR' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare';
 
 export default function ItemGrid({ selectedCategories }: ItemGridProps) {
   const [selectedItem, setSelectedItem] = useState<CardItem | SealedProduct | null>(null);
@@ -101,7 +101,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         ['Fire', 'Water', 'Grass', 'Colorless', 'Lightning', 'Psychic', 'Fighting', 'Dragon', 'Darkness', 'Metal', 'Fairy', 'None'].includes(cat)
       );
       const selectedRarities = selectedCategories.filter(cat => 
-        ['Common', 'Uncommon', 'Rare', 'Double Rare', 'Ultra Rare', 'Illustration Rare', 'Special Illustration Rare', 'Hyper Rare', 'Promo', 'Shiny Rare', 'Gallery', 'Super Rare'].includes(cat)
+        ['Common', 'Uncommon', 'Rare', 'Double Rare', 'Ultra Rare', 'Illustration Rare', 'SIR', 'Hyper Rare', 'Promo', 'Shiny Rare', 'Gallery', 'Super Rare'].includes(cat)
       ) as Rarity[];
       const selectedExtras = selectedCategories.filter(cat => 
         ['Holo', 'Reverse Holo', 'EX', 'V', 'VMAX', 'VSTAR', 'Secret Rare'].includes(cat)

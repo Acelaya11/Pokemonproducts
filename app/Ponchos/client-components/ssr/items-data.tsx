@@ -3,7 +3,7 @@ export interface CardItem {
     id_name: string;
     item_name: string;
     energy_type: 'Fire' | 'Water' | 'Grass' | 'Colorless' | 'Lightning' | 'Psychic' | 'Fighting' | 'Dragon' | 'Darkness' | 'Metal' | 'Fairy' | 'None';
-    rarities: ('Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'Special Illustration Rare' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare')[];
+    rarities: ('Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'SIR' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare')[];
     extra_types: ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Super Rare')[];
     set: string;
     set_id: string;

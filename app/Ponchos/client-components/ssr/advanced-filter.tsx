@@ -79,7 +79,7 @@ export const initialCategories: Category[] = [
   { id: 'Double Rare', name: 'Double Rare', checked: false, type: 'rarity' },
   { id: 'Ultra Rare', name: 'Ultra Rare', checked: false, type: 'rarity' },
   { id: 'Illustration Rare', name: 'Illustration Rare', checked: false, type: 'rarity' },
-  { id: 'Special Illustration Rare', name: 'Special Illustration Rare', checked: false, type: 'rarity' },
+  { id: 'SIR', name: 'SIR', checked: false, type: 'rarity' },
   { id: 'Hyper Rare', name: 'Hyper Rare', checked: false, type: 'rarity' },
   { id: 'Promo', name: 'Promo', checked: false, type: 'rarity' },
   { id: 'Shiny Rare', name: 'Shiny Rare', checked: false, type: 'rarity' },
