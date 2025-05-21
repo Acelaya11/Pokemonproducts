@@ -307,10 +307,10 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         </div>
 
         {/* Grid of Items */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
           {currentItems.map((item, index) => (
             <div key={item.id} className="w-full">
-              <div className="flex flex-col w-full mx-auto p-2 sm:p-3 rounded-lg backdrop-blur-sm">
+              <div className="flex flex-col w-full mx-auto p-1 sm:p-3 rounded-lg backdrop-blur-sm">
                 <ItemCard 
                   item={item} 
                   onViewDetails={handleViewDetails}
