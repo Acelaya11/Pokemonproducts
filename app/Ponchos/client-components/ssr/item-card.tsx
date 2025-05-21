@@ -23,11 +23,11 @@ const ItemCard = memo(function ItemCard({ item, onViewDetails, isFirstItem = fal
 
   return (
     <div 
-      className={`flex flex-col w-full h-[420px] bg-zinc-900 backdrop-blur-sm rounded-lg shadow-lg shadow-black overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95 active:shadow-inner ${!item.is_available ? 'opacity-50' : ''}`}
+      className={`flex flex-col w-full bg-zinc-900 backdrop-blur-sm rounded-lg shadow-lg shadow-black overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95 active:shadow-inner ${!item.is_available ? 'opacity-50' : ''}`}
       onClick={() => onViewDetails?.(item)}
     >
       {/* Image Container with Fixed Dimensions */}
-      <div className="relative w-full h-[280px]">
+      <div className="relative w-full aspect-[3/4]">
         {!isLoaded && (
           <div className="absolute inset-0 bg-zinc-800 animate-pulse" />
         )}
@@ -49,23 +49,23 @@ const ItemCard = memo(function ItemCard({ item, onViewDetails, isFirstItem = fal
       </div>
       
       {/* Item Details */}
-      <div className="flex-1 p-4 bg-zinc-700/50 backdrop-blur-sm flex flex-col">
-        <h3 className="text-md font-semibold text-white mb-2 line-clamp-1">{item.item_name}</h3>
-        <div className="space-y-1 flex-1">
+      <div className="p-2 sm:p-3 md:p-4 bg-zinc-700/50 backdrop-blur-sm">
+        <h3 className="text-xs sm:text-sm md:text-md font-semibold text-white mb-1 sm:mb-2 line-clamp-1">{item.item_name}</h3>
+        <div className="space-y-0.5 sm:space-y-1">
           {item.type === 'card' ? (
             <>
-              <p className="text-sm text-zinc-300 line-clamp-1">Set: {(item as CardItem).set}</p>
-              <p className="text-sm text-zinc-300 line-clamp-1">Rarity: {displayRarities()}</p>
-              <p className="text-sm text-zinc-300">PSA Grade: {(item as CardItem).psa_grade}</p>
+              <p className="text-[10px] sm:text-xs md:text-sm text-zinc-300 line-clamp-1">Set: {(item as CardItem).set}</p>
+              <p className="text-[10px] sm:text-xs md:text-sm text-zinc-300 line-clamp-1">Rarity: {displayRarities()}</p>
+              <p className="text-[10px] sm:text-xs md:text-sm text-zinc-300">PSA Grade: {(item as CardItem).psa_grade}</p>
             </>
           ) : (
             <>
-              <p className="text-sm text-zinc-300 line-clamp-1">Type: {(item as SealedProduct).product_type}</p>
-              <p className="text-sm text-zinc-300 line-clamp-1">Series: {(item as SealedProduct).series}</p>
-              <p className="text-sm text-zinc-300">Packs: {(item as SealedProduct).packs}</p>
+              <p className="text-[10px] sm:text-xs md:text-sm text-zinc-300 line-clamp-1">Type: {(item as SealedProduct).product_type}</p>
+              <p className="text-[10px] sm:text-xs md:text-sm text-zinc-300 line-clamp-1">Series: {(item as SealedProduct).series}</p>
+              <p className="text-[10px] sm:text-xs md:text-sm text-zinc-300">Packs: {(item as SealedProduct).packs}</p>
             </>
           )}
-          <p className="text-xl font-bold text-white mt-auto pt-2">${item.price.toFixed(2)}</p>
+          <p className="text-sm sm:text-lg md:text-xl font-bold text-white mt-1 sm:mt-2">${item.price.toFixed(2)}</p>
         </div>
       </div>
     </div>
