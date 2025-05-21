@@ -37,7 +37,7 @@ export function AddToCart({ item }: AddToCartProps) {
       onClick={handleAddToCart}
       disabled={alreadyInCart || !item.is_available}
     >
-      {alreadyInCart ? 'In Cart' : !item.is_available ? 'Sold' : 'Add to Cart'}
+      {alreadyInCart ? 'In Cart' : !item.is_available ? 'Not Available' : 'Add to Cart'}
     </Button>
   );
 } 

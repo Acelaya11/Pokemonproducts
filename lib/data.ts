@@ -68,10 +68,26 @@ export async function getSealedProducts(): Promise<SealedProduct[]> {
 }
 
 export async function getAllItems(): Promise<(CardItem | SealedProduct)[]> {
-  const [cards, sealedProducts] = await Promise.all([
-    getCards(),
-    getSealedProducts()
-  ]);
+  try {
+    const [cards, sealedProducts] = await Promise.all([
+      getCards().catch(error => {
+        console.error('Error fetching cards:', error);
+        return [];
+      }),
+      getSealedProducts().catch(error => {
+        console.error('Error fetching sealed products:', error);
+        return [];
+      })
+    ]);
 
-  return [...cards, ...sealedProducts];
+    // Filter out any items that are no longer available
+    const allItems = [...cards, ...sealedProducts].filter(item => item !== null);
+    
+    // Sort by ID to ensure consistent ordering
+    return allItems.sort((a, b) => a.id - b.id);
+  } catch (error) {
+    console.error('Error in getAllItems:', error);
+    // Return empty array instead of throwing to prevent UI from breaking
+    return [];
+  }
 } 

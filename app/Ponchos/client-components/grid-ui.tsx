@@ -35,19 +35,25 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
   useEffect(() => {
     const fetchItems = async () => {
       try {
+        setLoading(true);
         const data = await getAllItems();
         // Sort by ID by default
         const sortedData = [...data].sort((a, b) => a.id - b.id);
         setItems(sortedData);
       } catch (error) {
         console.error('Error fetching items:', error);
+        // If there's an error, try to keep the existing items
+        // This prevents the grid from becoming empty on temporary errors
+        if (items.length === 0) {
+          setItems([]);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchItems();
-  }, []);
+  }, [items.length]);
 
   // Reset current page when search terms change
   useEffect(() => {
@@ -167,7 +173,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         .filter(Boolean);
       
       result = result.filter(item => {
-        const itemText = `${item.id_name} ${item.item_name} ${item.type === 'card' ? (item as CardItem).set : (item as SealedProduct).series}`.toLowerCase()
+        const itemText = item.id_name.toLowerCase()
           .replace(/'/g, ''); // Remove ' characters from item text
         return searchKeywords.every(keyword => {
           // Split the item text into words
@@ -231,28 +237,6 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
     setSelectedItem(item);
     setDescriptionOpen(true);
   }, []);
-
-  const scrollToTop = useCallback(() => {
-    if (gridRef.current) {
-      const elementPosition = gridRef.current.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - 20;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  }, []);
-
-  const handlePrevPage = useCallback(() => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-    setTimeout(scrollToTop, 100);
-  }, [scrollToTop]);
-
-  const handleNextPage = useCallback(() => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-    setTimeout(scrollToTop, 100);
-  }, [totalPages, scrollToTop]);
 
   if (loading) {
     return (
@@ -324,10 +308,14 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
 
         {/* Grid of Items */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {currentItems.map((item) => (
+          {currentItems.map((item, index) => (
             <div key={item.id} className="w-full">
               <div className="flex flex-col w-full mx-auto p-2 sm:p-3 rounded-lg backdrop-blur-sm">
-                <ItemCard item={item} onViewDetails={handleViewDetails} />
+                <ItemCard 
+                  item={item} 
+                  onViewDetails={handleViewDetails}
+                  isFirstItem={index === 0}
+                />
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
                   <Button 
                     variant="outline" 
@@ -349,7 +337,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
             <Button
               variant="outline"
               className="w-24 sm:w-auto bg-purple-700 hover:bg-purple-800 text-white border-0"
-              onClick={handlePrevPage}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               <ChevronLeft className="w-4 h-4 mr-1" />
@@ -363,7 +351,7 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
             <Button
               variant="outline"
               className="w-24 sm:w-auto bg-purple-700 hover:bg-purple-800 text-white border-0"
-              onClick={handleNextPage}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
             >
               Next

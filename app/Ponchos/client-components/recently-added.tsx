@@ -68,8 +68,11 @@ export default function RecentlyAdded({ className = '' }: RecentlyAddedProps) {
     recentItems.map((item) => (
       <div 
         key={item.id} 
-        className="flex-shrink-0 w-36 sm:w-48 bg-zinc-900 rounded-lg shadow-md shadow-black overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95 active:shadow-inner"
+        className={`flex-shrink-0 w-36 sm:w-48 bg-zinc-900 rounded-lg shadow-md shadow-black overflow-hidden cursor-pointer transform transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95 active:shadow-inner focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 ${
+          !item.is_available ? 'opacity-50' : ''
+        }`}
         onClick={() => handleViewDetails(item)}
+        tabIndex={0}
       >
         {/* Image Container with Fixed Dimensions */}
         <div className="relative w-full aspect-[3/4]">
@@ -91,6 +94,11 @@ export default function RecentlyAdded({ className = '' }: RecentlyAddedProps) {
             fetchPriority={item.id === recentItems[0]?.id ? 'high' : 'auto'}
             sizes="(max-width: 768px) 144px, 192px"
           />
+          {!item.is_available && (
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <span className="text-white font-bold text-lg">Sold</span>
+            </div>
+          )}
         </div>
         
         {/* Item Details */}

@@ -13,9 +13,7 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
-  const { addItem, items: cartItems } = useCart();
-
-  const isInCart = cartItems.some((cartItem) => cartItem.id === item.id);
+  const { addItem, isInCart } = useCart();
 
   // Safely parse additionalImages
   const additionalImages = useMemo(() => {
@@ -257,7 +255,7 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-end gap-4 pt-4">
+        <div className="flex flex-col sm:flex-row gap-4 mt-6">
           <Button 
             className="w-full sm:w-auto px-4 sm:px-8 bg-purple-700 hover:bg-purple-800 active:bg-purple-900 text-white transition-colors duration-200"
             onClick={() => {
@@ -269,13 +267,14 @@ export function ItemDescriptionContent({ item }: ItemDescriptionContentProps) {
           </Button>
           <Button
             className={`w-full sm:w-auto px-4 sm:px-8 ${
-              isInCart 
+              !item.is_available || isInCart(item.id)
                 ? 'bg-gray-600 hover:bg-gray-600 !cursor-not-allowed' 
                 : 'bg-purple-700 hover:bg-purple-800 active:bg-purple-900'
             } text-white transition-colors duration-200`}
-            onClick={() => !isInCart && addItem(item)}
+            onClick={() => !isInCart(item.id) && item.is_available && addItem(item)}
+            disabled={!item.is_available || isInCart(item.id)}
           >
-            {isInCart ? 'In Cart' : 'Add to Cart'}
+            {!item.is_available ? 'Not Available' : isInCart(item.id) ? 'In Cart' : 'Add to Cart'}
           </Button>
         </div>
       </div>

@@ -73,11 +73,13 @@ export function ContactDialog({ item, open, onOpenChange }: ContactDialogProps) 
       }
       onOpenChange(newOpen);
     }}>
-      <DialogContent className="sm:max-w-[800px] bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-500 shadow-lg rounded-lg border border-gray-300 max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <DialogContent className="sm:max-w-[800px] bg-gradient-to-br from-zinc-700 via-zinc-600 to-zinc-500 shadow-lg rounded-lg border border-gray-300 max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] [&>button]:text-white [&>button]:hover:text-white/80">
         <DialogHeader>
-          <DialogTitle className="text-white">Contact Seller</DialogTitle>
-          <DialogDescription className="text-md text-white">
-            Interested in this {item.item_name}? Send a message to the seller.
+          <DialogTitle className="text-white text-xl">Contact Seller</DialogTitle>
+          <DialogDescription className="text-xl text-white">
+            Interested in this {item.item_name}?
+            <br />
+            Throw an offer or send a message to the seller.
           </DialogDescription>
         </DialogHeader>
         
