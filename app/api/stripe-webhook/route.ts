@@ -29,29 +29,6 @@ async function buffer(readable: ReadableStream<Uint8Array>) {
   return Buffer.from(result);
 }
 
-async function updateItemAvailability(session: Stripe.Checkout.Session, makeAvailable: boolean) {
-  try {
-    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
-    for (const item of lineItems.data) {
-      if (item.price && item.price.product) {
-        const product = await stripe.products.retrieve(item.price.product as string);
-        const id = product.metadata.id;
-        const type = product.metadata.type;
-        if (id && type) {
-          if (type === 'card') {
-            await supabase.from('cards').update({ is_available: makeAvailable }).eq('id', id);
-          } else if (type === 'sealed') {
-            await supabase.from('sealed_products').update({ is_available: makeAvailable }).eq('id', id);
-          }
-        }
-      }
-    }
-  } catch (err) {
-    console.error('DB Update Error:', err);
-    throw err;
-  }
-}
-
 export async function POST(req: Request) {
   const sig = req.headers.get('stripe-signature');
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -81,28 +58,33 @@ export async function POST(req: Request) {
     );
   }
 
-  try {
-    switch (event.type) {
-      case 'checkout.session.completed':
-        // Payment successful, keep items as unavailable
-        const session = event.data.object as Stripe.Checkout.Session;
-        await updateItemAvailability(session, false);
-        break;
-
-      case 'checkout.session.expired':
-      case 'payment_intent.payment_failed':
-        // Payment failed or session expired, make items available again
-        const failedSession = event.data.object as Stripe.Checkout.Session;
-        await updateItemAvailability(failedSession, true);
-        break;
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    try {
+      // Retrieve the line items for this session
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
+      for (const item of lineItems.data) {
+        if (item.price && item.price.product) {
+          const product = await stripe.products.retrieve(item.price.product as string);
+          const id = product.metadata.id;
+          const type = product.metadata.type;
+          if (id && type) {
+            if (type === 'card') {
+              await supabase.from('cards').update({ is_available: false }).eq('id', id);
+            } else if (type === 'sealed') {
+              await supabase.from('sealed_products').update({ is_available: false }).eq('id', id);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('DB Update Error:', err);
+      return NextResponse.json(
+        { error: `DB Update Error: ${(err as Error).message}` },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json({ received: true });
-  } catch (err) {
-    console.error('Error processing webhook:', err);
-    return NextResponse.json(
-      { error: `Error processing webhook: ${(err as Error).message}` },
-      { status: 500 }
-    );
   }
+
+  return NextResponse.json({ received: true });
 } 

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { supabase } from '@/lib/supabase';
 
 interface CartItem {
   id: number;
@@ -17,42 +16,6 @@ interface CartItem {
 export async function POST(req: Request) {
   try {
     const { items, email } = await req.json() as { items: CartItem[], email?: string };
-
-    // Check availability and reserve items
-    for (const item of items) {
-      const { data, error } = await supabase
-        .from(item.type === 'card' ? 'cards' : 'sealed_products')
-        .select('is_available')
-        .eq('id', item.id)
-        .single();
-
-      if (error || !data) {
-        return NextResponse.json(
-          { error: `Item ${item.item_name} not found` },
-          { status: 404 }
-        );
-      }
-
-      if (!data.is_available) {
-        return NextResponse.json(
-          { error: `Item ${item.item_name} is no longer available` },
-          { status: 400 }
-        );
-      }
-
-      // Reserve the item
-      const { error: updateError } = await supabase
-        .from(item.type === 'card' ? 'cards' : 'sealed_products')
-        .update({ is_available: false })
-        .eq('id', item.id);
-
-      if (updateError) {
-        return NextResponse.json(
-          { error: `Failed to reserve item ${item.item_name}` },
-          { status: 500 }
-        );
-      }
-    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -83,40 +46,8 @@ export async function POST(req: Request) {
         enabled: true,
         invoice_data: {
           description: 'Thank you for your purchase!',
-          account_tax_ids: ['txr_1Qxxxxxxxxxxxxx'], // You'll need to add your tax ID here
-          custom_fields: [
-            {
-              name: 'Order Type',
-              value: 'Pokemon Cards & Products',
-            },
-          ],
         },
       },
-      payment_intent_data: {
-        receipt_email: email || undefined,
-      },
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 0,
-              currency: 'usd',
-            },
-            display_name: 'Free Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 5,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 7,
-              },
-            },
-          },
-        },
-      ],
     });
 
     return NextResponse.json({ sessionId: session.id, url: session.url });
