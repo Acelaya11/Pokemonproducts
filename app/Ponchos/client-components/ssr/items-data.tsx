@@ -15,6 +15,7 @@ export interface CardItem {
     description: string;
     type: 'card';
     is_available: boolean;
+    weight: number;
 }
 
 export interface SealedProduct {
@@ -32,6 +33,7 @@ export interface SealedProduct {
     packs: number;
     type: 'sealed';
     is_available: boolean;
+    weight: number;
 }
 
 export type items = CardItem | SealedProduct; 
