@@ -15,24 +15,36 @@ interface CartItem {
 
 export async function POST(req: Request) {
   try {
-    const { items, email } = await req.json() as { items: CartItem[], email?: string };
+    const { items, email, shippingCost } = await req.json() as { items: CartItem[], email?: string, shippingCost: number };
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: items.map((item: CartItem) => ({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.item_name,
-            metadata: {
-              id: String(item.id),
-              type: item.type,
+      line_items: [
+        ...items.map((item: CartItem) => ({
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: item.item_name,
+              metadata: {
+                id: String(item.id),
+                type: item.type,
+              },
             },
+            unit_amount: Math.round(item.price * 100),
           },
-          unit_amount: Math.round(item.price * 100),
-        },
-        quantity: 1,
-      })),
+          quantity: 1,
+        })),
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Shipping Fee',
+            },
+            unit_amount: Math.round(shippingCost * 100),
+          },
+          quantity: 1,
+        }
+      ],
       mode: 'payment',
       billing_address_collection: 'required',
       shipping_address_collection: {

@@ -21,7 +21,7 @@ interface CartContentsProps {
 }
 
 export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
-  const { items, totalItems, removeItem, clearCart } = useCart();
+  const { items, totalItems, removeItem, clearCart, totalAmount, calculateShipping, totalWithShipping } = useCart();
   const [contactOpen, setContactOpen] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,7 +30,7 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const MINIMUM_PURCHASE = 5;
-  const total = items.reduce((sum, item) => sum + item.price, 0);
+  const shippingCost = calculateShipping();
 
   if (totalItems === 0) {
     if (isOpen) onOpenChange(false);
@@ -74,7 +74,7 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
             set: item.type === 'card' ? item.set : item.series,
             psa_grade: item.type === 'card' ? item.psa_grade : undefined
           })),
-          totalAmount: total,
+          totalAmount: totalAmount,
         }),
       });
 
@@ -106,7 +106,7 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
   };
 
   const handleCheckout = async () => {
-    if (total < MINIMUM_PURCHASE) {
+    if (totalAmount < MINIMUM_PURCHASE) {
       toast.error(`Minimum purchase amount of $${MINIMUM_PURCHASE} is required`);
       return;
     }
@@ -120,7 +120,8 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
         },
         body: JSON.stringify({ 
           items,
-          email: email || undefined
+          email: email || undefined,
+          shippingCost
         }),
       });
 
@@ -182,11 +183,21 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
 
             {items.length > 0 && (
               <div className="flex-none border-t border-zinc-600 pt-4 mt-auto">
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-4">
-                    <span className="text-white font-medium">Total:</span>
-                    <span className="text-white font-bold">${total.toFixed(2)}</span>
+                <div className="flex flex-col gap-2 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white font-medium">Subtotal:</span>
+                    <span className="text-white">${totalAmount.toFixed(2)}</span>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white font-medium">Shipping:</span>
+                    <span className="text-white">${shippingCost.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white font-medium">Total:</span>
+                    <span className="text-white font-bold">${totalWithShipping.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="flex justify-end mb-4">
                   <Button
                     variant="outline"
                     size="sm"
@@ -196,7 +207,7 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
                     Clear Cart
                   </Button>
                 </div>
-                {total < MINIMUM_PURCHASE && (
+                {totalAmount < MINIMUM_PURCHASE && (
                   <p className="text-red-500 text-sm mb-4">
                     Minimum purchase amount of ${MINIMUM_PURCHASE} is required
                   </p>
@@ -211,7 +222,7 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700 text-white"
                     onClick={handleCheckout}
-                    disabled={isLoading || total < MINIMUM_PURCHASE}
+                    disabled={isLoading || totalAmount < MINIMUM_PURCHASE}
                   >
                     {isLoading ? 'Processing...' : 'Checkout'}
                   </Button>
@@ -291,7 +302,7 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
               <div className="border-t border-zinc-600 pt-4">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-white font-medium">Total:</span>
-                  <span className="text-white font-bold">${total.toFixed(2)}</span>
+                  <span className="text-white font-bold">${totalAmount.toFixed(2)}</span>
                 </div>
               </div>
               

@@ -10,6 +10,7 @@ interface CartItem {
   set?: string;
   series?: string;
   psa_grade?: string;
+  weight: number;
 }
 
 interface CartContextType {
@@ -20,6 +21,8 @@ interface CartContextType {
   isInCart: (id: number) => boolean;
   totalItems: number;
   totalAmount: number;
+  calculateShipping: () => number;
+  totalWithShipping: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -45,9 +48,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.length;
   const totalAmount = items.reduce((sum, item) => sum + item.price, 0);
+  
+  const calculateShipping = () => {
+    const totalWeight = items.reduce((sum, item) => sum + (item.weight || 0), 0);
+    if (totalWeight >= 2) return 10;
+    if (totalWeight >= 1.5) return 8;
+    return 5;
+  };
+
+  const totalWithShipping = totalAmount + calculateShipping();
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, clearCart, isInCart, totalItems, totalAmount }}>
+    <CartContext.Provider value={{ 
+      items, 
+      addItem, 
+      removeItem, 
+      clearCart, 
+      isInCart, 
+      totalItems, 
+      totalAmount,
+      calculateShipping,
+      totalWithShipping 
+    }}>
       {children}
     </CartContext.Provider>
   );
