@@ -94,7 +94,9 @@ export const initialCategories: Category[] = [
   { id: 'V', name: 'V', checked: false, type: 'extra' },
   { id: 'VMAX', name: 'VMAX', checked: false, type: 'extra' },
   { id: 'VSTAR', name: 'VSTAR', checked: false, type: 'extra' },
-  { id: 'Secret Rare', name: 'Secret Rare', checked: false, type: 'extra' }
+  { id: 'Secret Rare', name: 'Secret Rare', checked: false, type: 'extra' },
+  { id: 'Pokeball', name: 'Pokeball', checked: true, type: 'extra' },
+  { id: 'Masterball', name: 'Masterball', checked: false, type: 'extra' },
 ];
 
 export const updateCategories = (currentCategories: Category[], categoryId: string): Category[] => {
