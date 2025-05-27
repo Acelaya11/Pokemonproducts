@@ -104,8 +104,8 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
         ['Common', 'Uncommon', 'Rare', 'Double Rare', 'Ultra Rare', 'Illustration Rare', 'SIR', 'Hyper Rare', 'Promo', 'Shiny Rare', 'Gallery', 'Super Rare'].includes(cat)
       ) as Rarity[];
       const selectedExtras = selectedCategories.filter(cat => 
-        ['Holo', 'Reverse Holo', 'EX', 'V', 'VMAX', 'VSTAR', 'Secret Rare'].includes(cat)
-      ) as ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare')[];
+        ['Holo', 'Reverse Holo', 'EX', 'V', 'VMAX', 'VSTAR', 'Secret Rare', 'Pokeball', 'Masterball'].includes(cat)
+      ) as ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Pokeball' | 'Masterball')[];
       const selectedProductTypes = selectedCategories.filter(cat =>
         ['Booster Pack', 'Booster Sleeve', '3pk Blister', 'B & B Deck', 'Booster Bundle', 'ETB', 'Booster Box', 'EX Box', 'Tins', 'Poncho Special', 'Special'].includes(cat)
       );
