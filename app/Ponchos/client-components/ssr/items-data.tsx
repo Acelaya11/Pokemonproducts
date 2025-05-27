@@ -4,7 +4,7 @@ export interface CardItem {
     item_name: string;
     energy_type: 'Fire' | 'Water' | 'Grass' | 'Colorless' | 'Lightning' | 'Psychic' | 'Fighting' | 'Dragon' | 'Darkness' | 'Metal' | 'Fairy' | 'None';
     rarities: ('Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'SIR' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare')[];
-    extra_types: ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Super Rare')[];
+    extra_types: ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Super Rare' | 'Pokeball' | 'Masterball')[];
     set: string;
     set_id: string;
     psa_grade: string;
