@@ -26,15 +26,9 @@ transporter.verify(function(error) {
 
 export async function POST(request: Request) {
   try {
-    // Log the incoming request
-    console.log('Received contact request');
-
     const body = await request.json();
     const { message, email } = body;
     const timestamp = new Date().toISOString();
-
-    // Log the received data
-    console.log('Request data:', body);
 
     // Validate required fields
     if (!message || !email) {
@@ -59,10 +53,12 @@ export async function POST(request: Request) {
 
     // Handle cart contact (multiple items)
     if (body.items && Array.isArray(body.items)) {
-      const itemsList = body.items.map((item: { id: number; id_name: string; price: number }) => `
+      const itemsList = body.items.map((item: { id: number; card_id?: string; product_id?: string; card?: string; product_name?: string; price: number }) => `
         <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
           <p><strong>ID:</strong> ${item.id}</p>
-          <p><strong>ID Name:</strong> ${item.id_name}</p>
+          <p><strong>Name:</strong> ${item.card || item.product_name || 'Unknown'}</p>
+          <p><strong>Card ID:</strong> ${item.card_id || 'N/A'}</p>
+          <p><strong>Product ID:</strong> ${item.product_id || 'N/A'}</p>
           <p><strong>Price:</strong> $${item.price.toFixed(2)}</p>
         </div>
       `).join('');
@@ -89,7 +85,9 @@ export async function POST(request: Request) {
         <p>${message}</p>
         <div style="margin: 20px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
           <p><strong>ID:</strong> ${body.id}</p>
-          <p><strong>ID Name:</strong> ${body.id_name}</p>
+          <p><strong>Name:</strong> ${body.card || body.product_name || 'Unknown'}</p>
+          <p><strong>Card ID:</strong> ${body.card_id || 'N/A'}</p>
+          <p><strong>Product ID:</strong> ${body.product_id || 'N/A'}</p>
           <p><strong>Price:</strong> $${body.price.toFixed(2)}</p>
         </div>
         <p><strong>Timestamp:</strong> ${new Date(timestamp).toLocaleString()}</p>
@@ -104,9 +102,7 @@ export async function POST(request: Request) {
       html: emailContent,
     };
 
-    console.log('Attempting to send email...');
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully:', info.response);
+    await transporter.sendMail(mailOptions);
 
     return NextResponse.json(
       { message: 'Contact request received successfully' },

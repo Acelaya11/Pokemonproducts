@@ -1,6 +1,6 @@
 'use client';
 import { useCart } from './CartContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "../../../components/ui/button";
 import Image from 'next/image';
 import { CartContents } from './CartContents';
@@ -8,6 +8,13 @@ import { CartContents } from './CartContents';
 export function CartIcon() {
   const { totalItems } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Reset cart open state when cart becomes empty
+  useEffect(() => {
+    if (totalItems === 0) {
+      setIsOpen(false);
+    }
+  }, [totalItems]);
 
   if (totalItems === 0) {
     return null;

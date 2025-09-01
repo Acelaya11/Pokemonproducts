@@ -2,13 +2,16 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface CartItem {
   id: number;
-  id_name: string;
-  item_name: string;
+  card_id?: string;
+  product_id?: string;
+  card?: string;
+  product_name?: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string | null;
   type: 'card' | 'sealed';
   set?: string;
   series?: string;
+  sealed_series?: string;
   psa_grade?: string;
   weight: number;
 }

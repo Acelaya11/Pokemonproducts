@@ -1,16 +1,16 @@
 export interface CardItem {
     id: number;     
-    id_name: string;
-    item_name: string;
-    energy_type: 'Fire' | 'Water' | 'Grass' | 'Colorless' | 'Lightning' | 'Psychic' | 'Fighting' | 'Dragon' | 'Darkness' | 'Metal' | 'Fairy' | 'None';
-    rarities: ('Common' | 'Uncommon' | 'Rare' | 'Double Rare' | 'Ultra Rare' | 'Illustration Rare' | 'SIR' | 'Hyper Rare' | 'Promo' | 'Shiny Rare' | 'Gallery' | 'Super Rare')[];
-    extra_types: ('Holo' | 'Reverse Holo' | 'EX' | 'V' | 'VMAX' | 'VSTAR' | 'Secret Rare' | 'Super Rare' | 'Pokeball' | 'Masterball')[];
+    card_id: string;
+    card: string;
+    series: string;
     set: string;
-    set_id: string;
+    energy_type: 'Fire' | 'Water' | 'Grass' | 'Colorless' | 'Lightning' | 'Psychic' | 'Fighting' | 'Dragon' | 'Darkness' | 'Metal' | 'Fairy' | 'None';
+    rarity: string;
+    other_rarities: string[]; // Changed to array
     psa_grade: string;
     price: number;
-    imageUrl: string;
-    additionalImages: string[];
+    imageUrl: string | null;
+    additionalImages: (string | null)[];
     uploadDate: string;
     description: string;
     type: 'card';
@@ -20,15 +20,15 @@ export interface CardItem {
 
 export interface SealedProduct {
     id: number;
-    id_name: string;
-    item_name: string;
-    product_type: 'Booster Pack' | 'Booster Sleeve' | '3pk Blister' | 'B & B Deck' | 'Booster Bundle' | 'ETB' | 'Booster Box' | 'EX Box' | 'Poncho Special' | 'Special';
-    series: string;
-    set_id: string;
+    product_id: string;
+    product_name: string;
+    product_type: string;
+    sealed_series: string;
+    sealed_set: string;
     uploadDate: string;
     price: number;
-    imageUrl: string;
-    additionalImages: string[];
+    imageUrl: string | null;
+    additionalImages: (string | null)[];
     description: string;
     packs: number;
     type: 'sealed';

@@ -13,50 +13,28 @@ const STARTER_POKEMON = [
   { name: 'Squirtle', image: squirtle }
 ];
 
-// Function to get a random number between 0 and 1 with equal distribution
-const getRandomNumber = () => {
-  // Using crypto.getRandomValues() for better randomization
-  const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
-  return array[0] / (0xffffffff + 1);
-};
-
 export function PokemonGenerator() {
   const [selectedPokemon, setSelectedPokemon] = useState<{ name: string; image: typeof charmander } | null>(null);
   const [animationState, setAnimationState] = useState<'idle' | 'shaking' | 'opening' | 'reveal'>('idle');
   const [headingText, setHeadingText] = useState('Choose Your Shopping Buddy');
-  const [preSelectedPokemon, setPreSelectedPokemon] = useState<{ name: string; image: typeof charmander } | null>(null);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
-  // Pre-select a Pokemon and preload all images on component mount
+  // Pre-select a random Pokemon on component mount
   useEffect(() => {
-    const randomValue = getRandomNumber();
-    const index = Math.floor(randomValue * 3);
-    setPreSelectedPokemon(STARTER_POKEMON[index]);
-
-    // Preload all images
-    STARTER_POKEMON.forEach(pokemon => {
-      const img = new window.Image();
-      img.src = pokemon.image.src;
-      img.onload = () => {
-        setLoadedImages(prev => new Set([...prev, pokemon.name]));
-      };
-    });
+    const randomIndex = Math.floor(Math.random() * STARTER_POKEMON.length);
+    setSelectedPokemon(STARTER_POKEMON[randomIndex]);
   }, []);
 
-  const chooseStarter = () => {
-    if (!preSelectedPokemon || !loadedImages.has(preSelectedPokemon.name)) return;
+  const generatePokemon = () => {
+    if (!selectedPokemon) return;
     
     setHeadingText('Your Shopping Buddy is...');
     setAnimationState('shaking');
-    setSelectedPokemon(null);
     
     // Sequence of animations
     setTimeout(() => {
       setAnimationState('opening');
       setTimeout(() => {
         setAnimationState('reveal');
-        setSelectedPokemon(preSelectedPokemon);
       }, 1000);
     }, 3000);
   };
@@ -85,7 +63,7 @@ export function PokemonGenerator() {
           </div>
 
           {/* Pokemon Image */}
-          {selectedPokemon && animationState === 'reveal' && loadedImages.has(selectedPokemon.name) && (
+          {selectedPokemon && animationState === 'reveal' && (
             <div className="absolute inset-0 animate-fade-in">
               <Image
                 src={selectedPokemon.image}
@@ -102,13 +80,13 @@ export function PokemonGenerator() {
 
         {selectedPokemon && animationState === 'reveal' && (
           <h3 className="text-xl font-semibold text-white mb-8 animate-fade-in">
-            {selectedPokemon.name} !
+            {selectedPokemon.name}!
           </h3>
         )}
 
         <Button
-          onClick={chooseStarter}
-          disabled={animationState !== 'idle' || !preSelectedPokemon || !loadedImages.has(preSelectedPokemon.name)}
+          onClick={generatePokemon}
+          disabled={animationState !== 'idle'}
           className={`px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-500 mt-8 ${
             animationState === 'opening' || animationState === 'reveal' 
               ? 'opacity-0 scale-0' 

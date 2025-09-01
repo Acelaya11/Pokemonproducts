@@ -68,11 +68,14 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
           email: email.toLowerCase(),
           items: items.map(item => ({
             id: item.id,
-            id_name: item.id_name,
-            item_name: item.item_name,
+            card_id: item.card_id,
+            product_id: item.product_id,
+            card: item.card,
+            product_name: item.product_name,
             price: item.price,
-            set: item.type === 'card' ? item.set : item.series,
-            psa_grade: item.type === 'card' ? item.psa_grade : undefined
+            set: item.set,
+            series: item.series,
+            psa_grade: item.psa_grade
           })),
           totalAmount: totalAmount,
         }),
@@ -156,17 +159,32 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
               {items.map((item) => (
                 <div key={item.id} className="flex items-center gap-4 bg-zinc-800/50 p-3 rounded-lg">
                   <div className="relative w-16 h-16">
-                    <Image
-                      width={64}
-                      height={64}
-                      src={item.imageUrl}
-                      alt={item.item_name}
-                      className="h-16 w-16 object-cover rounded"
-                      loading='eager'
-                    />
+                    {item.imageUrl ? (
+                      <Image
+                        width={64}
+                        height={64}
+                        src={item.imageUrl}
+                        alt={item.card || item.product_name || 'Item'}
+                        className="h-16 w-16 object-cover rounded"
+                        loading='eager'
+                        onError={(e) => {
+                          // Fallback to placeholder if image fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          const placeholder = target.nextElementSibling as HTMLElement;
+                          if (placeholder) placeholder.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    {/* Placeholder for missing or failed images */}
+                    <div 
+                      className={`w-16 h-16 bg-gray-600 rounded flex items-center justify-center text-white text-xs font-medium ${item.imageUrl ? 'hidden' : 'flex'}`}
+                    >
+                      No Image
+                    </div>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-medium text-white">{item.item_name}</h4>
+                    <h4 className="font-medium text-white">{item.card || item.product_name || 'Item'}</h4>
                     <p className="text-sm text-white">${item.price.toFixed(2)}</p>
                   </div>
                   <Button
@@ -277,22 +295,37 @@ export function CartContents({ isOpen, onOpenChange }: CartContentsProps) {
                 {items.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 bg-zinc-800/50 p-3 rounded-lg">
                     <div className="relative w-16 h-16">
-                      <Image
-                        width={64}
-                        height={64}
-                        src={item.imageUrl}
-                        alt={item.item_name}
-                        className="h-16 w-16 object-cover rounded"
-                      />
+                      {item.imageUrl ? (
+                        <Image
+                          width={64}
+                          height={64}
+                          src={item.imageUrl}
+                          alt={item.card || item.product_name || 'Item'}
+                          className="h-16 w-16 object-cover rounded"
+                          onError={(e) => {
+                            // Fallback to placeholder if image fails to load
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const placeholder = target.nextElementSibling as HTMLElement;
+                            if (placeholder) placeholder.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      {/* Placeholder for missing or failed images */}
+                      <div 
+                        className={`w-16 h-16 bg-gray-600 rounded flex items-center justify-center text-white text-xs font-medium ${item.imageUrl ? 'hidden' : 'flex'}`}
+                      >
+                        No Image
+                      </div>
                     </div>
                     <div>
-                      <h4 className="font-medium text-white">{item.item_name}</h4>
+                      <h4 className="font-medium text-white">{item.card || item.product_name || 'Item'}</h4>
                       <p className="text-sm text-white">${item.price.toFixed(2)}</p>
                       <p className="text-xs text-white">
-                        {item.type === 'card' ? `Set: ${item.set}` : `Series: ${item.series}`}
+                        {item.type === 'card' ? `Set: ${item.set || 'N/A'}` : `Series: ${item.sealed_series || 'N/A'}`}
                       </p>
                       {item.type === 'card' && (
-                        <p className="text-xs text-white">PSA Grade: {item.psa_grade}</p>
+                        <p className="text-xs text-white">PSA Grade: {item.psa_grade || 'N/A'}</p>
                       )}
                     </div>
                   </div>

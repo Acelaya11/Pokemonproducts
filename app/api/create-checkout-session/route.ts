@@ -3,13 +3,17 @@ import { stripe } from '@/lib/stripe';
 
 interface CartItem {
   id: number;
-  item_name: string;
+  card_id?: string;
+  product_id?: string;
+  card?: string;
+  product_name?: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string | null;
   type: 'card' | 'sealed';
   set?: string;
-  psa_grade?: string;
   series?: string;
+  sealed_series?: string;
+  psa_grade?: string;
   email?: string;
 }
 
@@ -24,10 +28,16 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: item.item_name,
+              name: item.card || item.product_name || 'Item',
               metadata: {
                 id: String(item.id),
                 type: item.type,
+                card_id: item.card_id || '',
+                product_id: item.product_id || '',
+                set: item.set || '',
+                series: item.series || '',
+                sealed_series: item.sealed_series || '',
+                psa_grade: item.psa_grade || '',
               },
             },
             unit_amount: Math.round(item.price * 100),

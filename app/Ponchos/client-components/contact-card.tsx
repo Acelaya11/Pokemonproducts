@@ -1,4 +1,4 @@
-import { items } from './ssr/items-data';
+import { CardItem, SealedProduct } from './ssr/items-data';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface ContactDialogProps {
-  item: items;
+  item: CardItem | SealedProduct;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -32,7 +32,10 @@ export function ContactDialog({ item, open, onOpenChange }: ContactDialogProps) 
           message,
           email,
           id: id,
-          id_name: item.id_name,
+          card_id: item.type === 'card' ? (item as CardItem).card_id : undefined,
+          product_id: item.type === 'sealed' ? (item as SealedProduct).product_id : undefined,
+          card: item.type === 'card' ? (item as CardItem).card : undefined,
+          product_name: item.type === 'sealed' ? (item as SealedProduct).product_name : undefined,
           price: item.price
         }),
       });
@@ -77,7 +80,7 @@ export function ContactDialog({ item, open, onOpenChange }: ContactDialogProps) 
         <DialogHeader>
           <DialogTitle className="text-white text-xl">Contact Seller</DialogTitle>
           <DialogDescription className="text-xl text-white">
-            Interested in this {item.item_name}?
+            Interested in this {item.type === 'card' ? (item as CardItem).card : (item as SealedProduct).product_name}?
             <br />
             Throw an offer or send a message to the seller.
           </DialogDescription>
