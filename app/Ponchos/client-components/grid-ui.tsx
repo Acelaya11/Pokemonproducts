@@ -207,8 +207,11 @@ export default function ItemGrid({ selectedCategories }: ItemGridProps) {
             // Simple logic: if card has ANY of the selected special properties, show it
             const hasAnyExtraRarity = selectedExtraRarities.some(extraRarityId => {
               // Check if the card's other_rarities array contains this special property
-              return Array.isArray(cardItem.other_rarities) && 
-                     cardItem.other_rarities.includes(extraRarityId);
+              // Add null/undefined checks to prevent runtime errors
+              if (!cardItem.other_rarities || !Array.isArray(cardItem.other_rarities)) {
+                return false;
+              }
+              return cardItem.other_rarities.includes(extraRarityId);
             });
             
             matches = matches && hasAnyExtraRarity;
