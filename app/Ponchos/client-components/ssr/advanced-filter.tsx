@@ -218,8 +218,8 @@ const shouldAutoResetToAllSeries = (categories: Category[]): boolean => {
     cat.id !== 'AllSeries'
   );
   
-  // Only reset if there's more than 1 card series
-  if (allCardSeries.length <= 1) return false;
+  // Only reset if there's at least 1 card series
+  if (allCardSeries.length === 0) return false;
   
   // Check if ALL card series are checked
   const activeCardSeries = allCardSeries.filter(series => series.checked);
@@ -239,9 +239,20 @@ const shouldAutoResetToAllSeries = (categories: Category[]): boolean => {
   const activeGreenCircles = allGreenCircles.filter(circle => circle.checked);
   
   // Reset when ALL card series, ALL card sets, AND ALL green circles are active
-  return (activeCardSeries.length === allCardSeries.length && allCardSeries.length > 0 &&
-          activeCardSets.length === allCardSets.length && allCardSets.length > 0 &&
-          activeGreenCircles.length === allGreenCircles.length && allGreenCircles.length > 0);
+  const shouldReset = (activeCardSeries.length === allCardSeries.length && allCardSeries.length > 0 &&
+                      activeCardSets.length === allCardSets.length && allCardSets.length > 0 &&
+                      activeGreenCircles.length === allGreenCircles.length && allGreenCircles.length > 0);
+  
+  // Debug logging
+  if (shouldReset) {
+    console.log('🔄 Auto-reset triggered:', {
+      series: `${activeCardSeries.length}/${allCardSeries.length}`,
+      sets: `${activeCardSets.length}/${allCardSets.length}`,
+      greenCircles: `${activeGreenCircles.length}/${allGreenCircles.length}`
+    });
+  }
+  
+  return shouldReset;
 };
 
 export const updateCategories = (currentCategories: Category[], categoryId: string): Category[] => {
@@ -290,6 +301,14 @@ export const updateCategories = (currentCategories: Category[], categoryId: stri
         // Only the clicked "All" option is checked
         return { ...category, checked: category.id === categoryId };
       }
+      
+      // Special handling for AllSeries - also clear all sets and rarities
+      if (categoryId === 'AllSeries') {
+        if (category.type === 'set' || category.type === 'rarity') {
+          return { ...category, checked: false };
+        }
+      }
+      
       return category;
     });
   }
@@ -462,10 +481,14 @@ export const updateCategories = (currentCategories: Category[], categoryId: stri
           });
           
           if (seriesWithSelectedSets.length === 0) {
-            // No series have selected sets - reactivate "All Series"
+            // No series have selected sets - reactivate "All Series" and clear all rarities
             updatedCategories = updatedCategories.map(cat => {
               if (cat.id === 'AllSeries') {
                 return { ...cat, checked: true };
+              }
+              // Clear all rarities when going back to "All Series"
+              if (cat.type === 'rarity') {
+                return { ...cat, checked: false };
               }
               return cat;
             });
