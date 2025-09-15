@@ -104,19 +104,19 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                 {(() => {
                   const allSeriesCategory = categories.find(cat => cat.id === 'AllSeries');
                   return allSeriesCategory ? (
-                    <div className="border-l-2 border-gray-600 pl-3 mb-3">
-                      <label className="flex items-start space-x-2 cursor-pointer hover:bg-purple-900/30 hover:bg-opacity-60 rounded px-2 py-1 transition-all duration-200">
+                    <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-3 mb-4 border border-purple-500/30">
+                      <label className="flex items-center space-x-3 cursor-pointer hover:bg-purple-800/20 rounded-md px-2 py-2 transition-all duration-200">
                         <input
                           type="checkbox"
                           checked={allSeriesCategory.checked}
                           onChange={() => onCategoryChange(allSeriesCategory.id)}
-                          className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 mt-1 flex-shrink-0"
+                          className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 flex-shrink-0"
                         />
-                        <span className="text-sm text-purple-200 font-semibold hover:text-purple-100 transition-colors duration-200">{allSeriesCategory.name}</span>
+                        <span className="text-sm font-semibold text-purple-100 hover:text-white transition-colors duration-200 flex-1">{allSeriesCategory.name}</span>
                         {/* Green checkmark for All Series when active */}
                         {allSeriesCategory.checked && (
-                          <div className="ml-auto flex items-center">
-                            <div className="w-4 h-4 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-400/30">
+                          <div className="flex items-center">
+                            <div className="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-400/30">
                               <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
@@ -135,10 +135,10 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                   );
                   
                   return (
-                    <div key={seriesCategory.id} className="border-l-2 border-gray-500 pl-3">
+                    <div key={seriesCategory.id} className="bg-gray-800/30 rounded-lg p-3 mb-3 border border-gray-600/30">
                       <div className="flex items-center justify-between">
                         <label 
-                          className="flex items-start space-x-2 cursor-pointer flex-1 hover:bg-blue-900/30 hover:bg-opacity-60 rounded px-2 py-1 transition-all duration-200"
+                          className="flex items-center space-x-3 cursor-pointer flex-1 hover:bg-blue-800/20 rounded-md px-2 py-2 transition-all duration-200"
                           onClick={(e) => {
                             // If there are sets to expand, toggle expansion
                             if (setsInSeries.length > 0) {
@@ -152,9 +152,9 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                             checked={seriesCategory.checked}
                             onChange={() => onCategoryChange(seriesCategory.id)}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 mt-1 flex-shrink-0"
+                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 flex-shrink-0"
                           />
-                          <span className="text-sm text-blue-100 font-semibold hover:text-blue-50 transition-colors duration-200">{seriesCategory.name}</span>
+                          <span className="text-sm text-blue-100 font-medium hover:text-white transition-colors duration-200 flex-1">{seriesCategory.name}</span>
                         </label>
                         
                         {/* Chevron for series expansion - only show if there are sets */}
@@ -166,7 +166,7 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                               e.stopPropagation();
                               toggleSeriesExpansion(seriesCategory.id);
                             }}
-                            className="ml-2 p-1 text-gray-400 hover:text-white transition-colors"
+                            className="ml-2 p-1.5 text-gray-400 hover:text-blue-300 transition-colors rounded-md hover:bg-blue-800/20"
                           >
                             <svg 
                               className={`w-4 h-4 transform transition-transform ${expandedSeries.has(seriesCategory.id) ? 'rotate-180' : ''}`}
@@ -182,22 +182,22 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                       
                       {/* Show sets for this series ONLY when expanded */}
                       {expandedSeries.has(seriesCategory.id) && (
-                        <div className="ml-6 mt-2 space-y-2">
-                          <div className="text-xs text-purple-200 font-medium mb-2">Sets in this series:</div>
+                        <div className="mt-3 space-y-2">
+                          <div className="text-xs text-cyan-200 font-medium mb-3 px-2">Sets in this series:</div>
                           
                           {/* All Sets option */}
                           {(() => {
                             const allSetsCategory = setCategories.find(cat => cat.id === `${seriesCategory.id}:AllSets`);
                             return allSetsCategory ? (
-                              <div className="border-l-2 border-gray-400 pl-3 mb-2">
-                                <label className="flex items-start space-x-2 cursor-pointer hover:bg-blue-900/30 hover:bg-opacity-60 rounded px-2 py-1 transition-all duration-200">
+                              <div className="bg-blue-900/20 rounded-md p-2 mb-3 border border-blue-500/30">
+                                <label className="flex items-center space-x-3 cursor-pointer hover:bg-blue-800/30 rounded-md px-2 py-1.5 transition-all duration-200">
                                   <input
                                     type="checkbox"
                                     checked={allSetsCategory.checked}
                                     onChange={() => onCategoryChange(allSetsCategory.id)}
-                                    className="w-3 h-3 text-blue-600 rounded focus:ring-blue-500 mt-1 flex-shrink-0"
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 flex-shrink-0"
                                   />
-                                  <span className="text-xs text-blue-200 font-semibold hover:text-blue-100 transition-colors duration-200">{allSetsCategory.name}</span>
+                                  <span className="text-sm text-blue-200 font-medium hover:text-blue-100 transition-colors duration-200 flex-1">{allSetsCategory.name}</span>
                                 </label>
                               </div>
                             ) : null;
@@ -210,41 +210,77 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                             );
                             
                             return (
-                              <div key={setCategory.id} className="border-l-2 border-gray-300 pl-3">
+                              <div key={setCategory.id} className="bg-cyan-900/10 rounded-md p-2 mb-2 border border-cyan-500/20">
                                 <div className="flex items-center justify-between">
-                                  <label 
-                                    className="flex items-start space-x-2 cursor-pointer flex-1 hover:bg-cyan-900/30 hover:bg-opacity-60 rounded px-2 py-1 transition-all duration-200"
-                                    onClick={(e) => {
-                                      // If there are rarities to expand, toggle expansion
-                                      if (raritiesInSet.length > 0) {
-                                        e.preventDefault();
-                                        // Toggle set expansion
-                                        const setId = setCategory.id;
-                                        if (expandedSeries.has(setId)) {
-                                          setExpandedSeries(prev => {
-                                            const newSet = new Set(prev);
-                                            newSet.delete(setId);
-                                            return newSet;
-                                          });
-                                        } else {
-                                          setExpandedSeries(prev => {
-                                            const newSet = new Set(prev);
-                                            newSet.add(setId);
-                                            return newSet;
-                                          });
-                                        }
-                                      }
-                                    }}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      checked={setCategory.checked}
-                                      onChange={() => onCategoryChange(setCategory.id)}
-                                      onClick={(e) => e.stopPropagation()}
-                                                                                className="w-3 h-3 text-cyan-600 rounded focus:ring-cyan-500 mt-1 flex-shrink-0"
-                                    />
-                                    <span className="text-xs text-cyan-100 hover:text-cyan-50 transition-colors duration-200">{setCategory.name}</span>
-                                  </label>
+                                   <label 
+                                     className="flex items-center space-x-3 cursor-pointer flex-1 hover:bg-cyan-800/20 rounded-md px-2 py-1.5 transition-all duration-200"
+                                     onClick={(e) => {
+                                       // If there are rarities to expand, toggle expansion
+                                       if (raritiesInSet.length > 0) {
+                                         e.preventDefault();
+                                         // Toggle set expansion
+                                         const setId = setCategory.id;
+                                         if (expandedSeries.has(setId)) {
+                                           setExpandedSeries(prev => {
+                                             const newSet = new Set(prev);
+                                             newSet.delete(setId);
+                                             return newSet;
+                                           });
+                                         } else {
+                                           setExpandedSeries(prev => {
+                                             const newSet = new Set(prev);
+                                             newSet.add(setId);
+                                             return newSet;
+                                           });
+                                         }
+                                       }
+                                     }}
+                                   >
+                                     <input
+                                       type="checkbox"
+                                       checked={setCategory.checked}
+                                       onChange={() => onCategoryChange(setCategory.id)}
+                                       onClick={(e) => e.stopPropagation()}
+                                       className="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500 flex-shrink-0"
+                                     />
+                                     <span className="text-sm text-cyan-100 font-medium hover:text-cyan-50 transition-colors duration-200 flex-1">{setCategory.name}</span>
+                                     
+                                     {/* Green checkmark for set when all rarities are active */}
+                                     {(() => {
+                                       const allRaritiesCategory = rarityCategories.find(cat => cat.id === `${setCategory.id}:AllRarities`);
+                                       if (!allRaritiesCategory) return null;
+                                       
+                                       // Check if this set has only one rarity
+                                       const raritiesInThisSet = rarityCategories.filter(cat => 
+                                         cat.type === 'rarity' && 
+                                         cat.parentSetId === setCategory.id && 
+                                         !cat.id.includes(':AllRarities')
+                                       );
+                                       
+                                       const hasOnlyOneRarity = raritiesInThisSet.length === 1;
+                                       const singleRarity = hasOnlyOneRarity ? raritiesInThisSet[0] : null;
+                                       
+                                       // Check if the parent set is actually active (either checked directly or via "All Sets")
+                                       const parentSeriesId = setCategory.parentSeriesId;
+                                       const allSetsCategory = setCategories.find(cat => cat.id === `${parentSeriesId}:AllSets`);
+                                       const isParentSetActive = setCategory.checked || (allSetsCategory && allSetsCategory.checked);
+                                       
+                                       // For single rarity sets: show green if either "All Rarities" is checked OR the single rarity is checked
+                                       // For multiple rarity sets: show green only if "All Rarities" is checked
+                                       // BUT only if the parent set is actually active
+                                       const shouldShowGreen = isParentSetActive && (hasOnlyOneRarity 
+                                         ? (allRaritiesCategory.checked || (singleRarity && singleRarity.checked))
+                                         : allRaritiesCategory.checked);
+                                       
+                                       return shouldShowGreen ? (
+                                         <div className="w-5 h-5 bg-green-400 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-400/30">
+                                           <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                           </svg>
+                                         </div>
+                                       ) : null;
+                                     })()}
+                                   </label>
                                   
                                   {/* Chevron for set expansion */}
                                   {raritiesInSet.length > 0 && (
@@ -269,7 +305,7 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                                           });
                                         }
                                       }}
-                                      className="ml-2 p-1 text-gray-400 hover:text-white transition-colors"
+                                      className="ml-2 p-1.5 text-cyan-400 hover:text-cyan-200 transition-colors rounded-md hover:bg-cyan-800/20"
                                     >
                                       <svg 
                                         className={`w-4 h-4 transform transition-transform ${expandedSeries.has(setCategory.id) ? 'rotate-180' : ''}`}
@@ -285,8 +321,8 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                                 
                                 {/* Show rarities for this set ONLY when expanded */}
                                 {expandedSeries.has(setCategory.id) && raritiesInSet.length > 0 && (
-                                  <div className="ml-4 mt-2 space-y-1">
-                                    <div className="text-xs text-pink-200 font-medium mb-1">Rarities in this set:</div>
+                                  <div className="mt-3 space-y-2">
+                                    <div className="text-xs text-pink-200 font-medium mb-2 px-2">Rarities in this set:</div>
                                     
                                     {/* All Rarities indicator - shows green circle when active */}
                                     {(() => {
@@ -332,15 +368,17 @@ export default function Sidebar({ categories, onCategoryChange }: SidebarProps) 
                                     })()}
                                     
                                     {raritiesInSet.filter(rarity => !rarity.id.includes(':AllRarities')).map((rarityCategory) => (
-                                      <label key={rarityCategory.id} className="flex items-start space-x-2 cursor-pointer hover:bg-blue-900/30 hover:bg-opacity-60 rounded px-2 py-1 transition-all duration-200">
-                                        <input
-                                          type="checkbox"
-                                          checked={rarityCategory.checked}
-                                          onChange={() => onCategoryChange(rarityCategory.id)}
-                                          className="w-2 h-2 text-blue-500 rounded focus:ring-blue-400 mt-1 flex-shrink-0"
-                                        />
-                                        <span className="text-xs text-blue-200 hover:text-blue-100 transition-colors duration-200">{rarityCategory.name}</span>
-                                      </label>
+                                      <div key={rarityCategory.id} className="bg-blue-900/10 rounded-md p-2 mb-1 border border-blue-500/20">
+                                        <label className="flex items-center space-x-3 cursor-pointer hover:bg-blue-800/20 rounded-md px-2 py-1.5 transition-all duration-200">
+                                          <input
+                                            type="checkbox"
+                                            checked={rarityCategory.checked}
+                                            onChange={() => onCategoryChange(rarityCategory.id)}
+                                            className="w-4 h-4 text-blue-500 rounded focus:ring-blue-400 flex-shrink-0"
+                                          />
+                                          <span className="text-sm text-blue-200 font-medium hover:text-blue-100 transition-colors duration-200 flex-1">{rarityCategory.name}</span>
+                                        </label>
+                                      </div>
                                     ))}
                                   </div>
                                 )}
